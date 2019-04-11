@@ -1,0 +1,7 @@
+
+
+	-	Decidir o que é mapa, o que é usuário, o que é listener
+	-   Permitir mais de um usuário o mesmo tempo, mesmo com o mapa vazio
+	-	Permitir o movimento apenas quando o valor do caminho for 0
+	
+	-	Parte gráfica
