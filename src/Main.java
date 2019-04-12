@@ -5,17 +5,11 @@ public class Main {
 
 	public static void main(String[] args) {
 		
-		Game g = new Game();
+		Game g = new Game(7);
 		//Cria os jogadores com as posições, e os adiciona ao jogo;
-		int[] p1pos = {1,1};
-		int[] p2pos = {4,4};
-		int[] p3pos = {0,4};
-		Player p1 = new Player(p1pos);
-		Player p2 = new Player(p2pos);
-		Player p3 = new Player(p3pos);
-		g.addPlayer(p1);
-		g.addPlayer(p2);
-		g.addPlayer(p3);
+		g.addPlayer(1, 2);
+		g.addPlayer(4, 4);
+		g.addPlayer(4, 0);
 		
 		//É necessária uma janela para ser o foco do teclado
 		JFrame aWindow = new JFrame("Labirinto");
