@@ -1,7 +1,5 @@
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
-public class Game implements KeyListener{
+public class Game {
 	private Player[] players;
 	private int numPlayers;
 	private Maze maze;
@@ -18,40 +16,6 @@ public class Game implements KeyListener{
 		else							currentPlayer=0;
 	}
 	
-	// Quando KeyPressed for chamada no main
-	// ela irá identificar a tecla clicada
-	// e chamará a função adequada
-	//
-	//currentPlayer será o valor da thread
-	//que chamou
-	public void keyPressed(KeyEvent e) {	
-		Player p = this.players[ this.currentPlayer ];
-		switch(e.getKeyCode()) {
-			case 32: //Barra de espaço
-				changePlayer();
-				break;
-			case 37:
-				this.maze.goLeft(p);
-				break;
-			case 38: 
-				this.maze.goUp(p);
-				break;
-			case 39:
-				this.maze.goRight(p);
-				break;
-			case 40:
-				this.maze.goDown(p);
-				break;
-		}
-		//clear console
-		System.out.println(this);
-	}
-	//Métodos Necessários pois a
-	//classe extende KeyListener
-	public void keyReleased(KeyEvent e) {}
-	public void keyTyped(KeyEvent e) {}
-	
-	
 	//********************************************************************************//
 	//******************************   Fim Temporário   ******************************//
 	//********************************************************************************//
@@ -66,15 +30,19 @@ public class Game implements KeyListener{
 	 * Adiciona um jogador, e o coloca no labirinto;
 	 * */
 	public void addPlayer(int x, int y) {
-		Player p = new Player(this.numPlayers, x, y);
+		Player p = new Player(this, this.numPlayers, x, y);
 		if(this.numPlayers < 4) {
 			this.players[ this.numPlayers ] = p;
 			numPlayers++;
 			
 			this.maze.changeTileValue(p, numPlayers);
 			
+			p.start();
 			System.out.println(this);
 		}
+	}
+	public Maze getMaze(){
+		return this.maze;
 	}
 	
 	public String toString() {

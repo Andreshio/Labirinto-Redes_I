@@ -26,28 +26,28 @@ public class Maze {
 		if( isMovementValid( p.getX()-1, p.getY()) ) {
 			changeTileValue( p, 0);
 			p.decreaseX();
-			changeTileValue( p, p.getId()+1 );
+			changeTileValue( p, p.getGameId()+1 );
 		}
 	}
 	public synchronized void goRight(Player p) 	{ 
 		if( isMovementValid( p.getX()+1, p.getY()) ) {
 			changeTileValue(p, 0);
 			p.increaseX();
-			changeTileValue( p, p.getId()+1 );
+			changeTileValue( p, p.getGameId()+1 );
 		}
 	}
 	public synchronized void goUp(Player p) 	{ 
 		if( isMovementValid( p.getX(), p.getY()-1 ) ) {
 			changeTileValue(p, 0);
 			p.decreaseY();
-			changeTileValue( p, p.getId()+1 );
+			changeTileValue( p, p.getGameId()+1 );
 		}
 	}
 	public synchronized void goDown(Player p) 	{
 		if( isMovementValid( p.getX(), p.getY()+1 ) ) {
 			changeTileValue(p, 0);
 			p.increaseY();
-			changeTileValue( p, p.getId()+1 );		
+			changeTileValue( p, p.getGameId()+1 );		
 		}
 	}
 	
