@@ -1,13 +1,13 @@
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.Socket;
 
-public class ClientPlayer implements KeyListener{
+public class KeySender implements KeyListener{
 	Socket socket;
-	ObjectOutputStream output;
+	DataOutputStream output;										// o ideal seria o ObjectOutputStream
 	
-	public ClientPlayer(Socket socket, ObjectOutputStream output) {
+	public KeySender(Socket socket, DataOutputStream output) {
 		this.socket = socket;
 		this.output = output;
 	}
@@ -19,10 +19,7 @@ public class ClientPlayer implements KeyListener{
 			if(code==32) {
 				this.socket.close();
 			} else {
-				output.flush();
-	        	output.writeObject(new Integer(32));
-	        	output.flush();
-	        	output.close();
+	        	output.writeBytes(code + "\n");
 			}
 		} catch(Exception e) {
 			e.printStackTrace();

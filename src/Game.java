@@ -27,7 +27,11 @@ public class Game {
 	}
 	
 	/*
-	 * Adiciona um jogador, e o coloca no labirinto;
+	 * Adiciona um jogador, o coloca no labirinto,
+	 * e inicia sua thread
+	 * 
+	 * Devido a todos os clientes usarem a mesma
+	 * porta, no momento só é possível 1 player
 	 * */
 	public void addPlayer(int x, int y) {
 		Player p = new Player(this, this.numPlayers, x, y);

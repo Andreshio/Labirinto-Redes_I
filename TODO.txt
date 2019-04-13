@@ -1,8 +1,6 @@
 
-
-	-	Decidir o que é mapa, o que é usuário, o que é listener
-	-   Permitir mais de um usuário o mesmo tempo, mesmo com o mapa vazio
-	-	Permitir o movimento apenas quando o valor do caminho for 0
+	- Receber mais de um jogador, por mais de uma porta;
+	- Enviar os dados do jogo para o jogador, preferencialmente com ObjectOutputStream, se conseguirmos
 	
 	-	Parte gráfica
 	

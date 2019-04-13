@@ -16,21 +16,27 @@ public class Player extends Thread {
 		this.points = 0;
 	}
 	
+	/*
+	 * 
+	 * Ouve os comandos pelo socket, e chama o método adequado
+	 * 
+	 * */
 	public void run() {
 		try {
-	        ServerSocket socketRecepcao = new ServerSocket(6789);
-	        Socket socketConexao = socketRecepcao.accept();
+			Maze maze = this.game.getMaze();
+			
+	        Socket socket = new ServerSocket(6789).accept(); 
+	        BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));		// O ideal seria o ObjectInputStream
 	        
-	        ObjectInputStream input = new ObjectInputStream(socketConexao.getInputStream());
-
 	        Integer move;
-	        
-	        while((move = (Integer) input.readObject())!=null) {
-	        	Maze maze = this.game.getMaze();
-	        	
+	        while(true) {
+		        move = Integer.parseInt( input.readLine() );
+		        
+		        System.out.println(maze);
+		        
 	        	switch(move) {
-				case 32: //Barra de espaço
-					socketConexao.close();
+				case 33: //Barra de espaço
+					socket.close();
 					break;
 				case 37:
 					maze.goLeft(this);
@@ -46,13 +52,12 @@ public class Player extends Thread {
 					break;
 	        	}
 	        	
-	        	 move = 0;
-	        	//System.out.println(this.game);
-	        	
+	        	move = 0;
+	        	System.out.println(this.game);
 	        }
 					
 		} catch(Exception e) {
-			System.out.println(e);
+			e.printStackTrace();
 		}
 	}  
 	
