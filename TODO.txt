@@ -1,8 +1,8 @@
+	- 	Enviar os dados do jogo para o jogador, preferencialmente com ObjectOutputStream, se conseguirmos
 
-	- Receber mais de um jogador, por mais de uma porta;
-	- Enviar os dados do jogo para o jogador, preferencialmente com ObjectOutputStream, se conseguirmos
-	
+	-	Separar a classe Player e a PlayerThread?
+
+	-	Paredes e inimigos, dar um significado para os números;	
 	-	Parte gráfica
-	
 	
 	https://dev.to/marksasp95/introducing-maze-generator-java-320g

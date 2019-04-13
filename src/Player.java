@@ -3,12 +3,18 @@ import java.net.*;
 
 public class Player extends Thread { 
 	private Game game;
+	private boolean connected;
 	private int gameId;
 	private int[] position;
 	private int points;
 	
+	private Socket socket;
+	DataOutputStream output;
+	BufferedReader input;
+	
 	public Player(Game game, int id, int x, int y) {
 		this.game = game;
+		this.connected = false;
 		this.gameId = id;
 		this.position = new int[2];
 		this.position[0] = x;
@@ -18,44 +24,26 @@ public class Player extends Thread {
 	
 	/*
 	 * 
-	 * Ouve os comandos pelo socket, e chama o método adequado
+	 * Espera a conecção do ClientMain
+	 * e chama o método play()
 	 * 
 	 * */
 	public void run() {
 		try {
-			Maze maze = this.game.getMaze();
+			System.out.println("rodando");
+			int PORT = 6789+this.gameId+1;
 			
-	        Socket socket = new ServerSocket(6789).accept(); 
-	        BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));		// O ideal seria o ObjectInputStream
+	        this.socket = new ServerSocket(PORT).accept(); 
+	        this.output = new DataOutputStream(this.socket.getOutputStream());
+	        this.input = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));		// O ideal seria o ObjectInputStream
+	       
+	        System.out.println("accepted");
 	        
-	        Integer move;
-	        while(true) {
-		        move = Integer.parseInt( input.readLine() );
-		        
-		        System.out.println(maze);
-		        
-	        	switch(move) {
-				case 33: //Barra de espaço
-					socket.close();
-					break;
-				case 37:
-					maze.goLeft(this);
-					break;
-				case 38: 
-					maze.goUp(this);
-					break;
-				case 39:
-					maze.goRight(this);
-					break;
-				case 40:
-					maze.goDown(this);
-					break;
-	        	}
-	        	
-	        	move = 0;
-	        	System.out.println(this.game);
-	        }
-					
+	        if( this.input.readLine().equals("START") ) {
+	        	System.out.println("CONNECTED");
+	        	this.connected = true;
+	        	this.play();
+	        }		
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -63,10 +51,44 @@ public class Player extends Thread {
 	
 	
 	
+	/*
+	 * Médodo que recebe do socket a tecla
+	 * clicada pelo cliente, (vinda do KeySender)
+	 * e chama o método adequado
+	 * */
+	private void play() throws Exception{
+		Maze maze = this.game.getMaze();
+		Integer move;
+        while(true) {
+	        move = Integer.parseInt( this.input.readLine() );
+	        
+        	switch(move) {
+			case 33: //Barra de espaço
+				socket.close();
+				break;
+			case 37:
+				maze.goLeft(this);
+				break;
+			case 38: 
+				maze.goUp(this);
+				break;
+			case 39:
+				maze.goRight(this);
+				break;
+			case 40:
+				maze.goDown(this);
+				break;
+        	}
+        	output.writeBytes("COMMAND RECEIVED\n");
+        	
+        	move = 0;
+        	System.out.println(this.game);
+        }
+	}
+	
 	public void changePoints(int points) {
 		this.points += points;
 	}
-	
 	public void decreaseX() {
 		this.position[0]--;
 	}
@@ -88,6 +110,13 @@ public class Player extends Thread {
 	}
 	public int getY() {
 		return position[1];
+	}
+	public boolean isConnected() {
+		return this.connected;
+	}
+	
+	public String toString() {
+		return "gameID: " + this.gameId + " points: " + this.points;
 	}
 	
 }

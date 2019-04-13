@@ -4,26 +4,28 @@ public class Maze {
 	
 	public Maze(int mazeSize) {
 		this.matrix = new int[mazeSize][mazeSize];
+		
+		
+		// Para testar o sistema de pontos
+		this.matrix[5][5] = 8;
+		this.matrix[4][3] = -4;
 	}
 	
 	/*
 	 * Funções de movimentação
 	 * 
 	 * se o movimento for permitido, 
+	 * 		dar pontos ao jogador, se for o caso
 	 * 		limpar o rastro anterior no labirinto
 	 * 		atualizar a posição do jogador
 	 * 		atualizar o labirinto com a nova posição do jogador
-	 * 
-	 * 
-	 *
-	 * todo:
-	 * 	no corpo do if existirá o método que diz se o movimento trará pontuação
 	 *
 	 *	synchronized ?
 	 * */
 	
 	public synchronized  void goLeft(Player p) { 
 		if( isMovementValid( p.getX()-1, p.getY()) ) {
+			givePlayerPoints(p, p.getX()-1, p.getY() );
 			changeTileValue( p, 0);
 			p.decreaseX();
 			changeTileValue( p, p.getGameId()+1 );
@@ -31,6 +33,7 @@ public class Maze {
 	}
 	public synchronized void goRight(Player p) 	{ 
 		if( isMovementValid( p.getX()+1, p.getY()) ) {
+			givePlayerPoints(p, p.getX()+1, p.getY() );
 			changeTileValue(p, 0);
 			p.increaseX();
 			changeTileValue( p, p.getGameId()+1 );
@@ -38,6 +41,7 @@ public class Maze {
 	}
 	public synchronized void goUp(Player p) 	{ 
 		if( isMovementValid( p.getX(), p.getY()-1 ) ) {
+			givePlayerPoints(p, p.getX(), p.getY()-1 );
 			changeTileValue(p, 0);
 			p.decreaseY();
 			changeTileValue( p, p.getGameId()+1 );
@@ -45,6 +49,7 @@ public class Maze {
 	}
 	public synchronized void goDown(Player p) 	{
 		if( isMovementValid( p.getX(), p.getY()+1 ) ) {
+			givePlayerPoints(p, p.getX(), p.getY()+1 );
 			changeTileValue(p, 0);
 			p.increaseY();
 			changeTileValue( p, p.getGameId()+1 );		
@@ -62,16 +67,13 @@ public class Maze {
 		
 		if(inBounds)tileValue = this.matrix[x][y]; 						// Para evitar outOfBoundsExeption
 		
-		boolean tile_is_free = tileValue<1 || tileValue>3;				// Diz se o movimento não encontrará algo sólido
+		boolean tile_is_free = tileValue<1 || tileValue>5;				// Diz se o movimento não encontrará algo sólido
 		
 		return inBounds && tile_is_free;
 	}
 	
 	private void givePlayerPoints(Player p, int x, int y) {
-		//TODO
-		//Checa se o movimento moverá o player a um tile
-		//com pontos, e ativa a função changePoints do player.
-		//Será chamado nos métodos de movimentação, após o if
+		p.changePoints( this.matrix[x][y] );
 	}
 	
 	public int[][] getMatrix(){
