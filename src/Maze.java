@@ -5,7 +5,6 @@ public class Maze {
 	public Maze(int mazeSize) {
 		this.matrix = new int[mazeSize][mazeSize];
 		
-		
 		// Para testar o sistema de pontos
 		this.matrix[5][5] = 8;
 		this.matrix[4][3] = -4;
@@ -15,10 +14,10 @@ public class Maze {
 	 * Funções de movimentação
 	 * 
 	 * se o movimento for permitido, 
-	 * 		dar pontos ao jogador, se for o caso
-	 * 		limpar o rastro anterior no labirinto
-	 * 		atualizar a posição do jogador
-	 * 		atualizar o labirinto com a nova posição do jogador
+	 * 		dar pontos ao jogador, se for o caso;
+	 * 		limpar o rastro anterior no labirinto;
+	 * 		atualizar a posição do jogador;
+	 * 		atualizar o labirinto com a nova posição do jogador;
 	 *
 	 *	synchronized ?
 	 * */

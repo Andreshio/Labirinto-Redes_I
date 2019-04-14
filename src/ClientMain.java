@@ -11,11 +11,17 @@ public class ClientMain {
 
 	public static void main(String[] args) throws Exception{
 		
+		System.out.println(" TESTE ");
+		
 		// Serão usados pelo KeySender
 		Socket socket = new Socket("127.0.0.1", 6789);
 		
+		System.out.println(" TESTE 2");
+		
 		BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		DataOutputStream output = new DataOutputStream(socket.getOutputStream());
+		
+		System.out.println(" TESTE ");
 		
 		/*
 		 * Se comunicando com o ServerMain, para pegar o PORT

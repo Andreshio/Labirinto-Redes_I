@@ -6,7 +6,6 @@ import java.net.Socket;
 public class KeySender implements KeyListener{
 	Socket socket;
 	DataOutputStream output;										// o ideal seria o ObjectOutputStream
-	
 	BufferedReader input;
 	
 	public KeySender(Socket socket, DataOutputStream output, BufferedReader input) {
@@ -23,21 +22,28 @@ public class KeySender implements KeyListener{
 	 * */
 	public void keyPressed(KeyEvent event) {	
 		int code = event.getKeyCode();
-		System.out.println(code);
+		System.out.println(code + " PRESSED");
 		try {
-			if(code==32) {
-				this.socket.close();
-			} else {
-	        	output.writeBytes(code + "\n");
-			}
-			System.out.println(this.input.readLine());			//COMMAND RECEIVED
+			
+	        output.writeBytes(code + " true\n");
+			//System.out.println(this.input.readLine());			//COMMAND RECEIVED
+		
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
-	//Métodos Necessários pois a
-	//classe extende KeyListener
-	public void keyReleased(KeyEvent e) {}
-	public void keyTyped(KeyEvent e) {}
+	public void keyReleased(KeyEvent event) {	
+		int code = event.getKeyCode();
+		System.out.println(code + " RELEASED");
+		try {
+			
+	        output.writeBytes(code + " false\n");
+			//System.out.println(this.input.readLine());			//COMMAND RECEIVED
+		
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	public void keyTyped(KeyEvent event) {}
 
 }
