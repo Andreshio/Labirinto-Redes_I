@@ -33,8 +33,6 @@ public class PlayerReader extends Thread{
 		while(true) {
 			command = this.input.readLine().split(" ");
 			
-			System.out.println("Working");
-			
 			key = Integer.parseInt( command[0] );
 			state = Boolean.parseBoolean( command[1] );
 			if(key>0 && key<1024) {

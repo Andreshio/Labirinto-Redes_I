@@ -10,6 +10,7 @@ public class Player extends Thread {
 	private int[] position;
 	private int points;
 	private PlayerReader reader;
+	private long lastMove;
 	
 	private ServerSocket server;
 	private Socket socket;
@@ -24,7 +25,9 @@ public class Player extends Thread {
 		this.position[0] = x;
 		this.position[1] = y;
 		this.points = 0;
-
+		this.lastMove = System.currentTimeMillis();
+		
+		
 		System.out.println("Player " + (id+1) + " waiting client");
 		this.server = new ServerSocket(6789+id+1); 
 	}
@@ -45,27 +48,39 @@ public class Player extends Thread {
 			
 			Maze maze = this.game.getMaze();
 	       
-	        
+	        boolean moved;
 	        
 	        /*
 	         * Move o player de acordo
 	         * com as teclas pressionadas;
 	         * */
 	        while(true) {
+	        	moved = false;
 	        	if(this.connected) {
-					if( this.keys[ KeyEvent.VK_UP ] ) {
-						System.out.println("up");
+	        		System.out.println(this.keys[ KeyEvent.VK_UP ]);
+	        		if( this.keys[ KeyEvent.VK_UP ] ) {
 						maze.goUp(this);
+						moved=true;
+						System.out.println(maze);
 					}
 					if( this.keys[ KeyEvent.VK_DOWN ] ) {
 						maze.goDown(this);
+						moved=true;
+						System.out.println(maze);
 					}
 					if( this.keys[ KeyEvent.VK_LEFT ] ) {
 						maze.goLeft(this);
+						moved=true;
+						System.out.println(maze);
 					}
 					if( this.keys[ KeyEvent.VK_RIGHT ] ) {
 						maze.goRight(this);
+						moved=true;
+						System.out.println(maze);
 					}
+	        	}
+	        	if(moved) {
+	        		Thread.sleep(700);
 	        	}
 			}
 	        
