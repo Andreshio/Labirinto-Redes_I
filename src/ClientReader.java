@@ -4,9 +4,11 @@ import java.net.Socket;
 
 public class ClientReader extends Thread{
 	private BufferedReader input;
+	private DrawTools dtools;
 	
-	public ClientReader(BufferedReader input) {
+	public ClientReader(BufferedReader input, DrawTools dtools) {
 		this.input = input;
+		this.dtools = dtools;
 	}
 	/*
 	 * Recebe dados do jogo enviados pela classe PlayerSender
@@ -37,8 +39,11 @@ public class ClientReader extends Thread{
 				
 				matrix = parser( splitter(aux[0]) );
 				players = parser( splitter(aux[1]) );
-					
-				System.out.println(line);
+				
+				/*
+				 * Dá update no display
+				 * */
+				dtools.updateDrawMaze(matrix);
 			}
 		} catch(Exception e) {
 			e.printStackTrace();

@@ -55,13 +55,16 @@ public class ClientMain {
 		
 		/*
 		 * Recebe o estado do jogo pelo servidor;
+		 * Passa as informações para o display
 		 * */
-		ClientReader cr = new ClientReader(input);
+		DrawTools dtools = new DrawTools(100, new int[7][7]);
+		ClientReader cr = new ClientReader(input, dtools);
 		cr.start();
 		
 		// É necessária uma janela para ser o foco do teclado
 		JFrame aWindow = new JFrame("Labirinto");
-		aWindow.setBounds(50, 100, 300, 300);
+		//aWindow.setBounds(50, 100, 300, 300);
+		aWindow.setSize(1000, 1000);
 		aWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		// Ativa o KeySender como um listener e o linka
@@ -72,6 +75,9 @@ public class ClientMain {
 		
 		aWindow.add(typingArea);
 	    aWindow.setVisible(true);
+	    
+	    aWindow.getContentPane().add(dtools);
+
 	}
 }
 
