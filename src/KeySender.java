@@ -7,12 +7,8 @@ public class KeySender implements KeyListener{
 	Socket socket;
 	DataOutputStream output;										// o ideal seria o ObjectOutputStream
 	
-	BufferedReader input;
-	
-	public KeySender(Socket socket, DataOutputStream output, BufferedReader input) {
-		this.socket = socket;
+	public KeySender(DataOutputStream output) {
 		this.output = output;
-		this.input = input;
 	}
 	/*
 	 * Quando uma tecla é pressionada pelo
@@ -23,21 +19,26 @@ public class KeySender implements KeyListener{
 	 * */
 	public void keyPressed(KeyEvent event) {	
 		int code = event.getKeyCode();
-		System.out.println(code);
+		//System.out.println(code + " PRESSED");
 		try {
-			if(code==32) {
-				this.socket.close();
-			} else {
-	        	output.writeBytes(code + "\n");
-			}
-			System.out.println(this.input.readLine());			//COMMAND RECEIVED
+			
+	        output.writeBytes(code + " true\n");
+		
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
-	//Métodos Necessários pois a
-	//classe extende KeyListener
-	public void keyReleased(KeyEvent e) {}
-	public void keyTyped(KeyEvent e) {}
+	public void keyReleased(KeyEvent event) {	
+		int code = event.getKeyCode();
+		//System.out.println(code + " RELEASED");
+		try {
+			
+	        output.writeBytes(code + " false\n");
+		
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	public void keyTyped(KeyEvent event) {}
 
 }

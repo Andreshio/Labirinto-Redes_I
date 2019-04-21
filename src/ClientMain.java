@@ -10,13 +10,12 @@ import javax.swing.JTextField;
 public class ClientMain {
 
 	public static void main(String[] args) throws Exception{
-		
 		// Serão usados pelo KeySender
 		Socket socket = new Socket("127.0.0.1", 6789);
 		
 		BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		DataOutputStream output = new DataOutputStream(socket.getOutputStream());
-		
+			
 		/*
 		 * Se comunicando com o ServerMain, para pegar o PORT
 		 * de um jogador livre
@@ -52,7 +51,9 @@ public class ClientMain {
 		
 		// Listener do teclado que envia as teclas clicadas
 		// ao servidor pelo socket
-		KeySender ks = new KeySender(socket, output, input);
+		KeySender ks = new KeySender(output);
+		ClientReader cr = new ClientReader(input);
+		cr.start();
 		
 		// É necessária uma janela para ser o foco do teclado
 		JFrame aWindow = new JFrame("Labirinto");
