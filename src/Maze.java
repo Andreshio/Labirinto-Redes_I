@@ -1,6 +1,9 @@
 
 public class Maze {
 	private int[][] matrix;
+	private Tile[][] maze;
+	private int[][] wallPath;
+	private int wallPathIndex;
 	
 	public Maze(int mazeSize) {
 		this.matrix = new int[mazeSize][mazeSize];
@@ -8,6 +11,11 @@ public class Maze {
 		// Para testar o sistema de pontos
 		this.matrix[5][5] = 8;
 		this.matrix[4][3] = -4;
+		
+		this.wallPath = new int[ (mazeSize+1)*(mazeSize+1) ][4];
+		this.wallPathIndex = 0;
+		
+		this.createMaze(mazeSize+1);
 	}
 	
 	/*
@@ -21,6 +29,109 @@ public class Maze {
 	 *
 	 *	synchronized ?
 	 * */
+	
+	private void createMaze(int mazeSize) {
+		int nullTiles = mazeSize*mazeSize;
+		
+		System.out.println(mazeSize);
+		
+		this.maze = new Tile[mazeSize][mazeSize];
+		
+		int[] point = {(int)Math.floor(Math.random()*mazeSize), (int)Math.floor(Math.random()*mazeSize)};
+		
+		Tile tile, nextTile;
+		System.out.println("\n\n\n\n Creating MAZE \n\n\n\n");
+		while(nullTiles>0) {
+			int[] nextPoint = getNextPoint(point, mazeSize); // [lado, x, y];
+			if(nextPoint[0] != -1) {
+				if(maze[ point[0] ][ point[1] ] == null) {
+					maze[ point[0] ][ point[1] ] = new Tile();
+					nullTiles--;
+				}
+				if(maze[ nextPoint[1] ][ nextPoint[2] ] == null) {
+					maze[ nextPoint[1] ][ nextPoint[2] ] = new Tile();
+					nullTiles--;
+					tile = maze[ point[0] ][ point[1] ];
+					nextTile = maze[ nextPoint[1] ][ nextPoint[2] ];
+					
+					this.wallPath[ this.wallPathIndex ][0] = point[0];
+					this.wallPath[ this.wallPathIndex ][1] = point[1];
+					this.wallPath[ this.wallPathIndex ][2] = nextPoint[1];
+					this.wallPath[ this.wallPathIndex ][3] = nextPoint[2];
+					this.wallPathIndex++;
+					
+					this.makePath(nextPoint[0], tile, nextTile);
+				}
+				
+				point[0] = nextPoint[1];
+				point[1] = nextPoint[2];
+			}
+		}
+		for(int i=0; i<mazeSize*mazeSize; i++) {
+			System.out.println(wallPath[i][0]+" "+wallPath[i][1] + " " + wallPath[i][2] + " " + wallPath[i][3]);
+		}
+		System.out.println("\n\n\n MAZE CREATED \n\n\n");
+	}
+	public void makePath(int side, Tile tile, Tile nextTile) {
+		if(side == 0) {	//left
+			tile.setLeft(true);
+			nextTile.setRight(true);
+		}
+		if(side == 1) {	//top
+			tile.setTop(true);
+			nextTile.setBottom(true);
+		}
+		if(side == 2) {	//right
+			tile.setRight(true);
+			nextTile.setLeft(true);
+		}
+		if(side == 3) {	//bottom
+			tile.setBottom(true);
+			nextTile.setTop(true);
+		}
+	}
+	
+	public int[] getNextPoint(int[] point, int mazeSize) {
+		/*
+		 * left, top, right, bottom
+		 * 
+		 * x0, y0, xsize, ysize
+		 * */
+		
+		int[] nextPoint = null;
+		int randomSide = (int)Math.floor(Math.random()*4);
+		if(randomSide == 0 && point[0] > 0) { //Esquerda
+			nextPoint = new int[2];
+			nextPoint[0] = point[0]-1;
+			nextPoint[1] = point[1];
+			System.out.println("Esquerda "+ nextPoint[0] + " " + nextPoint[1]);
+		}
+		if(randomSide == 1 && point[1] > 0) { //Acima
+			nextPoint = new int[2];
+			nextPoint[0] = point[0];
+			nextPoint[1] = point[1]-1;
+			System.out.println("Acima "+ nextPoint[0] + " " + nextPoint[1]);
+		}
+		if(randomSide == 2 && point[0] < mazeSize-1) { //Direita
+			nextPoint = new int[2];
+			nextPoint[0] = point[0]+1;
+			nextPoint[1] = point[1];
+			System.out.println("Direita "+ nextPoint[0] + " " + nextPoint[1]);
+		}
+		if(randomSide == 3 && point[1] < mazeSize-1) { //Abaixo
+			nextPoint = new int[2];
+			nextPoint[0] = point[0];
+			nextPoint[1] = point[1]+1;
+			System.out.println("Abaixo "+ nextPoint[0] + " " + nextPoint[1]);
+		}
+		
+		if(nextPoint != null) {
+			int[] out = {randomSide, nextPoint[0], nextPoint[1]};
+			return out;
+		}
+		int[] out = {-1, point[0], point[1]};
+		return out;
+	}
 	
 	public synchronized  void goLeft(Player p) { 
 		if( isMovementValid( p.getX()-1, p.getY()) ) {
@@ -87,6 +198,14 @@ public class Maze {
 				out += j<this.matrix[0].length-1? " " : "";				// o X seja horizontal
 			}															
 			out += i<this.matrix[0].length-1?"#":"";
+		}
+		out+="&";
+		for(int i=0; i<this.wallPath.length; i++) {
+			for(int j=0; j<this.wallPath[i].length; j++) {
+				out+=wallPath[i][j];
+				out+=j<wallPath[i].length-1?" ":"";
+			}
+			out += i<wallPath.length-1?"#":"";
 		}
 		return out;
 	}

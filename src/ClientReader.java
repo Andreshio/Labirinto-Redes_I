@@ -29,6 +29,7 @@ public class ClientReader extends Thread{
 	        String line;
 	        String[] aux;
 			int[][] matrix;
+			int[][] wallPath;
 			int[][] players;
 			
 			input.readLine();				// Lê a primeira linha vazia
@@ -37,13 +38,16 @@ public class ClientReader extends Thread{
 				line = input.readLine();
 				aux = line.split("&");
 				
-				matrix = parser( splitter(aux[0]) );
-				players = parser( splitter(aux[1]) );
+				System.out.println(aux[1]);
+				
+				matrix   = parser( splitter(aux[0]) );
+				wallPath = parser( splitter(aux[1]) );
+				players  = parser( splitter(aux[2]) );
 				
 				/*
 				 * Dá update no display
 				 * */
-				dtools.updateDrawMaze(matrix);
+				dtools.updateDrawMaze(matrix, wallPath);
 			}
 		} catch(Exception e) {
 			e.printStackTrace();

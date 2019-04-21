@@ -36,7 +36,6 @@ public class Player extends Thread {
 	/*
 	 * 
 	 * Espera a conexão do ClientMain
-	 * e chama o método play()
 	 * 
 	 * */
 	public void run() {

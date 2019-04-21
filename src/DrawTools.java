@@ -1,19 +1,28 @@
-import java.awt.Color;
-import java.awt.Graphics;
-import javax.swing.JPanel;
-
+import javax.swing.*;
+import java.awt.*;
 @SuppressWarnings("serial")
 public class DrawTools extends JPanel{
 	
 	// Matriz do labirinto
 	private int[][] maze;
+	
+	private int[][] wallPath;
+	
 	// Variavel que define o tamanho de cada quadrado do labirinto
 	private int rectSize;
+	
+	private int dims;
+    private int thickness;
+    private int margin;
 	
 	//Contrutor que recebe o tamanho de cada quadrado e o proprio labirinto
 	public DrawTools(int rectSize, int[][] maze) {
 		this.rectSize = rectSize;
 		this.maze = maze;
+		
+		this.dims = rectSize;
+		this.thickness = 5;
+		this.margin = 3;
 	}
 	
 	// Desenha o labirinto conforme cada elemento numerico
@@ -27,7 +36,6 @@ public class DrawTools extends JPanel{
         // Laco que percorre o labirinto
         for (int i = 0; i < maze.length; i++) {
 			for (int j = 0; j < maze[i].length; j++) {
-				
 				//if(maze[i][j]>0) {
 					
 				int mValue = maze[i][j];
@@ -59,10 +67,20 @@ public class DrawTools extends JPanel{
 					break;
 				}
 				
-				g.fillRect(j*rectSize,i*rectSize,rectSize,rectSize);
-				//}
+				g.fillRect(j*rectSize + rectSize/4  ,i*rectSize + rectSize/4 ,rectSize/2,rectSize/2);
 			}
 		}
+		
+        Graphics2D g2 = (Graphics2D) g;
+        BasicStroke stroke = new BasicStroke(thickness);
+        g2.setStroke(stroke);
+        
+        for (int i = 0; i < wallPath.length; i++) {
+            g2.drawLine(wallPath[i][0] * (900/7) + margin, 
+                        wallPath[i][1] * (900/7) + margin, 
+                        wallPath[i][2] * (900/7) + margin, 
+                        wallPath[i][3] * (900/7) + margin);
+        }
     }
     
     // Troca um valor por outro - NAO UTILIZADO
@@ -72,8 +90,9 @@ public class DrawTools extends JPanel{
     }
     
     // Atualiza o labirinto a partir do labirinto recebido por parametro
-    public void updateDrawMaze(int[][] updatedMaze) {
-    	maze=updatedMaze;
+    public void updateDrawMaze(int[][] updatedMaze, int[][] wallPath) {
+    	this.maze=updatedMaze;
+    	this.wallPath = wallPath;
     	repaint();
     }
 }

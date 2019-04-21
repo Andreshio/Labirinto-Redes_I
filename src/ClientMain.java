@@ -57,13 +57,13 @@ public class ClientMain {
 		 * Recebe o estado do jogo pelo servidor;
 		 * Passa as informações para o display
 		 * */
-		DrawTools dtools = new DrawTools(100, new int[7][7]);
+		DrawTools dtools = new DrawTools(900/7, new int[7][7]);
 		ClientReader cr = new ClientReader(input, dtools);
 		cr.start();
 		
 		// É necessária uma janela para ser o foco do teclado
 		JFrame aWindow = new JFrame("Labirinto");
-		//aWindow.setBounds(50, 100, 300, 300);
+		
 		aWindow.setSize(1000, 1000);
 		aWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
