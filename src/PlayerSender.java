@@ -11,7 +11,11 @@ public class PlayerSender extends Thread{
 	public PlayerSender(Player player) {
 		this.player = player;
 	}
-	
+	/*
+	 * 
+	 * Envia o estado do jogo para o cliente
+	 * 
+	 * */
 	public void run() {
 		try { 
 			Socket socket = player.getSocket();

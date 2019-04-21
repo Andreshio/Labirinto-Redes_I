@@ -52,6 +52,10 @@ public class ClientMain {
 		// Listener do teclado que envia as teclas clicadas
 		// ao servidor pelo socket
 		KeySender ks = new KeySender(output);
+		
+		/*
+		 * Recebe o estado do jogo pelo servidor;
+		 * */
 		ClientReader cr = new ClientReader(input);
 		cr.start();
 		

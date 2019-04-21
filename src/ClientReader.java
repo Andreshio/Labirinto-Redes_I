@@ -8,7 +8,20 @@ public class ClientReader extends Thread{
 	public ClientReader(BufferedReader input) {
 		this.input = input;
 	}
-	
+	/*
+	 * Recebe dados do jogo enviados pela classe PlayerSender
+	 * 
+	 * os dados vem no formato:
+	 * 
+	 * matriz_labirinto + "&" + pontuação_players
+	 * 
+	 * as linhas da matriz_labirinto são separadas por "#"
+	 * e suas colunas por " "
+	 
+	 * os jogadores da pontuação_players são separados por "#"
+	 * 
+	 * o seu id e sua pontuação separados por " "
+	 * */
 	public void run() {
 		try { 
 	        String line;

@@ -44,6 +44,12 @@ public class Player extends Thread {
 	        this.socket = this.server.accept();
 			this.output = new DataOutputStream(this.socket.getOutputStream());
 	        
+			/*
+			 * 
+			 * Inicializa as threads reader e sender.
+			 * 
+			 * */
+			
 			this.reader = new PlayerReader(this);
 			this.reader.start();
 			
@@ -83,6 +89,9 @@ public class Player extends Thread {
 						System.out.println(maze);
 					}
 	        	}
+	        	/*
+	        	 * Limita o número de movimentações
+	        	 * */
 	        	if(moved) {
 	        		Thread.sleep(700);
 	        	}

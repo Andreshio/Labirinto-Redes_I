@@ -11,7 +11,12 @@ public class PlayerReader extends Thread{
 	public PlayerReader(Player player) {
 		this.player = player;
 	}
-	
+	/*
+	 * 
+	 * Recebe as ações no teclado do cliente, e atualiza os valores
+	 * do player no servidor
+	 * 
+	 * */
 	public void run() {
 		try { 
 			Socket socket = player.getSocket();
