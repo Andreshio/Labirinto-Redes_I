@@ -59,10 +59,11 @@ public class Game {
 	
 	public String toString() {
 		String out = this.maze.toString();
+		out+= "&";
 		for(int i=0; i<this.numPlayers; i++) {
 			out += this.players[i].toString();
-			out += "\n";
+			out += i<this.numPlayers-1?"#":"";
 		}
-		return out + "\n";
+		return out;
 	}
 }

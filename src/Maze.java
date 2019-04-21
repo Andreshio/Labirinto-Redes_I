@@ -84,9 +84,10 @@ public class Maze {
 		for(int i=0; i < this.matrix[0].length;i++) {
 			for(int j=0; j < this.matrix[0].length; j++) {
 				out += matrix[j][i]; 									// J e I invertidos para que 
-			}															// o X seja horizontal
-			out += "\n";
+				out += j<this.matrix[0].length-1? " " : "";				// o X seja horizontal
+			}															
+			out += i<this.matrix[0].length-1?"#":"";
 		}
-		return out + "\n";
+		return out;
 	}
 }

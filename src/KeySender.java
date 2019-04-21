@@ -6,12 +6,9 @@ import java.net.Socket;
 public class KeySender implements KeyListener{
 	Socket socket;
 	DataOutputStream output;										// o ideal seria o ObjectOutputStream
-	BufferedReader input;
 	
-	public KeySender(Socket socket, DataOutputStream output, BufferedReader input) {
-		this.socket = socket;
+	public KeySender(DataOutputStream output) {
 		this.output = output;
-		this.input = input;
 	}
 	/*
 	 * Quando uma tecla é pressionada pelo
@@ -22,11 +19,10 @@ public class KeySender implements KeyListener{
 	 * */
 	public void keyPressed(KeyEvent event) {	
 		int code = event.getKeyCode();
-		System.out.println(code + " PRESSED");
+		//System.out.println(code + " PRESSED");
 		try {
 			
 	        output.writeBytes(code + " true\n");
-			//System.out.println(this.input.readLine());			//COMMAND RECEIVED
 		
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -34,11 +30,10 @@ public class KeySender implements KeyListener{
 	}
 	public void keyReleased(KeyEvent event) {	
 		int code = event.getKeyCode();
-		System.out.println(code + " RELEASED");
+		//System.out.println(code + " RELEASED");
 		try {
 			
 	        output.writeBytes(code + " false\n");
-			//System.out.println(this.input.readLine());			//COMMAND RECEIVED
 		
 		} catch(Exception e) {
 			e.printStackTrace();

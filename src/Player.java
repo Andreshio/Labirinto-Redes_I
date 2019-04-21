@@ -10,6 +10,7 @@ public class Player extends Thread {
 	private int[] position;
 	private int points;
 	private PlayerReader reader;
+	private PlayerSender sender;
 	private long lastMove;
 	
 	private ServerSocket server;
@@ -46,6 +47,9 @@ public class Player extends Thread {
 			this.reader = new PlayerReader(this);
 			this.reader.start();
 			
+			this.sender = new PlayerSender(this);
+			this.sender.start();
+			
 			Maze maze = this.game.getMaze();
 	       
 	        boolean moved;
@@ -56,8 +60,8 @@ public class Player extends Thread {
 	         * */
 	        while(true) {
 	        	moved = false;
+	        	System.out.println("TESTE");
 	        	if(this.connected) {
-	        		System.out.println(this.keys[ KeyEvent.VK_UP ]);
 	        		if( this.keys[ KeyEvent.VK_UP ] ) {
 						maze.goUp(this);
 						moved=true;
@@ -105,7 +109,9 @@ public class Player extends Thread {
 	public void increaseY() {
 		this.position[1]++;
 	}
-	
+	public Game getGame() {
+		return this.game;
+	}
 	public int getGameId() {
 		return this.gameId;
 	}
@@ -129,7 +135,7 @@ public class Player extends Thread {
 	}
 	
 	public String toString() {
-		return "gameID: " + this.gameId + " points: " + this.points;
+		return this.gameId + " " + this.points;
 	}
 	
 }
