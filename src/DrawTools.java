@@ -33,36 +33,46 @@ public class DrawTools extends JPanel{
 				int mValue = maze[i][j];
 				switch (mValue) {
 				case 1:
-					g.setColor(Color.BLUE);
+					drawSquare(i, j, Color.BLUE, g);
 					break;
 				case 2:
-					g.setColor(Color.RED);
+					drawSquare(i, j, Color.RED, g);
 					break;
 				case 3:
-					g.setColor(Color.GREEN);
+					drawSquare(i, j, Color.GREEN, g);
 					break;
 				case 4:
-					g.setColor(Color.MAGENTA);
+					drawSquare(i, j, Color.MAGENTA, g);
 					break;
 				case 9:
-					g.setColor(Color.BLACK);
+					drawSquare(i, j, Color.BLACK, g);
 					break;
 				case 0:
-					g.setColor(Color.WHITE);
 					break;
 
 				default:
 					if(mValue>0)
-						g.setColor(Color.YELLOW);
+						drawCircle(i, j, Color.YELLOW, g);
 					else
-						g.setColor(Color.GRAY);
+						drawCircle(i, j, Color.GRAY, g);
 					break;
 				}
 				
-				g.fillRect(j*rectSize,i*rectSize,rectSize,rectSize);
+				
+				//
 				//}
 			}
 		}
+    }
+    
+    private void drawSquare(int x, int y, Color color, Graphics g) {
+    	g.setColor(color);
+    	g.fillRect(y*rectSize,x*rectSize,rectSize,rectSize);
+    }
+    
+    private void drawCircle(int x, int y, Color color, Graphics g) {
+    	g.setColor(color);
+    	g.fillOval(y*rectSize, x*rectSize, rectSize, rectSize);
     }
     
     // Troca um valor por outro - NAO UTILIZADO
