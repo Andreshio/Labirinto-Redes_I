@@ -85,8 +85,28 @@ public class Maze {
 	}
 	//carve
 	public void makePath(int side, int x, int y, int mazeSize) {
-		System.out.print("\n" + x + " " + y);
+		/*
+		 * X e Y formam o ponto final da linha
+		 * */
 		
+		System.out.print("\n" + x + " " + y);
+		if(side == 0 && y > 0) {
+			this.maze[x][y].setTop(false);
+			this.maze[x][y-1].setBottom(false);
+		}
+		if(side == 1 && x>0 && y> 0) { //top
+			this.maze[x][y-1].setLeft(false);
+			this.maze[x-1][y-1].setRight(false);
+		}
+		if(side == 2 && x>0 && y>0) {	//right
+			this.maze[x-1][y].setTop(false);
+			this.maze[x-1][y-1].setBottom(false);
+		}
+		if(side == 3 && x>0) {
+			this.maze[x][y].setLeft(false);
+			this.maze[x-1][y].setRight(false);
+		}
+		/*
 		if(side == 0 && x > 0 && y > 0) {	//left
 			System.out.print(" left");
 			this.maze[x-1][y-1].setBottom(false);
@@ -107,6 +127,7 @@ public class Maze {
 			this.maze[x][y].setLeft(false);
 			this.maze[x-1][y].setRight(false);
 		}
+		*/
 	}
 	
 	public int[] getNextPoint(int[] point, int mazeSize) {
