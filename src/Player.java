@@ -65,7 +65,9 @@ public class Player extends Thread {
 	         * */
 	        while(true) {
 	        	moved = false;
-	        	System.out.println("TESTE");
+	        	
+	        	System.out.println( maze.getTile(this.position[0], this.position[1]) );
+	        	
 	        	if(this.connected) {
 	        		if( this.keys[ KeyEvent.VK_UP ] ) {
 						maze.goUp(this);

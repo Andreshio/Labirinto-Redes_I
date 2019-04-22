@@ -71,6 +71,7 @@ public class DrawTools extends JPanel{
 			}
 		}
 		
+        g.setColor(Color.BLACK);
         Graphics2D g2 = (Graphics2D) g;
         BasicStroke stroke = new BasicStroke(thickness);
         g2.setStroke(stroke);

@@ -30,29 +30,40 @@ public class Maze {
 	 *	synchronized ?
 	 * */
 	
+	public Tile getTile(int x, int y) {
+		return maze[x][y];
+	}
+	
 	private void createMaze(int mazeSize) {
 		int nullTiles = mazeSize*mazeSize;
 		
 		System.out.println(mazeSize);
 		
 		this.maze = new Tile[mazeSize][mazeSize];
+		for(int i=0; i<mazeSize; i++) {
+			for(int j=0; j<mazeSize; j++) {
+				this.maze[i][j] = new Tile();
+			}
+		}
 		
 		int[] point = {(int)Math.floor(Math.random()*mazeSize), (int)Math.floor(Math.random()*mazeSize)};
 		
-		Tile tile, nextTile;
 		System.out.println("\n\n\n\n Creating MAZE \n\n\n\n");
 		while(nullTiles>0) {
 			int[] nextPoint = getNextPoint(point, mazeSize); // [lado, x, y];
 			if(nextPoint[0] != -1) {
-				if(maze[ point[0] ][ point[1] ] == null) {
-					maze[ point[0] ][ point[1] ] = new Tile();
+				if(maze[ point[0] ][ point[1] ].visited() == false) {
+					maze[ point[0] ][ point[1] ].setVisited(true);
 					nullTiles--;
 				}
-				if(maze[ nextPoint[1] ][ nextPoint[2] ] == null) {
-					maze[ nextPoint[1] ][ nextPoint[2] ] = new Tile();
+				if(maze[ nextPoint[1] ][ nextPoint[2] ].visited() == false) {
+					
+					maze[ nextPoint[1] ][ nextPoint[2] ].setVisited(true);
 					nullTiles--;
+					/*
 					tile = maze[ point[0] ][ point[1] ];
 					nextTile = maze[ nextPoint[1] ][ nextPoint[2] ];
+					*/
 					
 					this.wallPath[ this.wallPathIndex ][0] = point[0];
 					this.wallPath[ this.wallPathIndex ][1] = point[1];
@@ -60,7 +71,7 @@ public class Maze {
 					this.wallPath[ this.wallPathIndex ][3] = nextPoint[2];
 					this.wallPathIndex++;
 					
-					this.makePath(nextPoint[0], tile, nextTile);
+					this.makePath(nextPoint[0], nextPoint[1], nextPoint[2], mazeSize);
 				}
 				
 				point[0] = nextPoint[1];
@@ -72,22 +83,29 @@ public class Maze {
 		}
 		System.out.println("\n\n\n MAZE CREATED \n\n\n");
 	}
-	public void makePath(int side, Tile tile, Tile nextTile) {
-		if(side == 0) {	//left
-			tile.setLeft(true);
-			nextTile.setRight(true);
+	//carve
+	public void makePath(int side, int x, int y, int mazeSize) {
+		System.out.print("\n" + x + " " + y);
+		
+		if(side == 0 && x > 0 && y > 0) {	//left
+			System.out.print(" left");
+			this.maze[x-1][y-1].setBottom(false);
+			this.maze[x-1][y].setTop(false);
 		}
-		if(side == 1) {	//top
-			tile.setTop(true);
-			nextTile.setBottom(true);
+		if(side == 1 && x > 0 && y > 0) {	//top
+			System.out.print(" top");
+			this.maze[x-1][y-1].setRight(false);
+			this.maze[x][y-1].setLeft(false);
 		}
-		if(side == 2) {	//right
-			tile.setRight(true);
-			nextTile.setLeft(true);
+		if(side == 2 && y > 0) {	//right
+			System.out.print(" right");
+			this.maze[x][y-1].setBottom(false);
+			this.maze[x][y].setTop(false);
 		}
-		if(side == 3) {	//bottom
-			tile.setBottom(true);
-			nextTile.setTop(true);
+		if(side == 3 && x>0) {	//bottom
+			System.out.print(" bottom");
+			this.maze[x][y].setLeft(false);
+			this.maze[x-1][y].setRight(false);
 		}
 	}
 	
@@ -104,25 +122,21 @@ public class Maze {
 			nextPoint = new int[2];
 			nextPoint[0] = point[0]-1;
 			nextPoint[1] = point[1];
-			System.out.println("Esquerda "+ nextPoint[0] + " " + nextPoint[1]);
 		}
 		if(randomSide == 1 && point[1] > 0) { //Acima
 			nextPoint = new int[2];
 			nextPoint[0] = point[0];
 			nextPoint[1] = point[1]-1;
-			System.out.println("Acima "+ nextPoint[0] + " " + nextPoint[1]);
 		}
 		if(randomSide == 2 && point[0] < mazeSize-1) { //Direita
 			nextPoint = new int[2];
 			nextPoint[0] = point[0]+1;
 			nextPoint[1] = point[1];
-			System.out.println("Direita "+ nextPoint[0] + " " + nextPoint[1]);
 		}
 		if(randomSide == 3 && point[1] < mazeSize-1) { //Abaixo
 			nextPoint = new int[2];
 			nextPoint[0] = point[0];
 			nextPoint[1] = point[1]+1;
-			System.out.println("Abaixo "+ nextPoint[0] + " " + nextPoint[1]);
 		}
 		
 		if(nextPoint != null) {
@@ -134,7 +148,7 @@ public class Maze {
 	}
 	
 	public synchronized  void goLeft(Player p) { 
-		if( isMovementValid( p.getX()-1, p.getY()) ) {
+		if( isMovementValid( p.getX()-1, p.getY()) && this.maze[ p.getX() ][ p.getY() ].pathLeft()  ) {
 			givePlayerPoints(p, p.getX()-1, p.getY() );
 			changeTileValue( p, 0);
 			p.decreaseX();
@@ -142,7 +156,7 @@ public class Maze {
 		}
 	}
 	public synchronized void goRight(Player p) 	{ 
-		if( isMovementValid( p.getX()+1, p.getY()) ) {
+		if( isMovementValid( p.getX()+1, p.getY()) && this.maze[ p.getX() ][ p.getY() ].pathRight() ) {
 			givePlayerPoints(p, p.getX()+1, p.getY() );
 			changeTileValue(p, 0);
 			p.increaseX();
@@ -150,7 +164,7 @@ public class Maze {
 		}
 	}
 	public synchronized void goUp(Player p) 	{ 
-		if( isMovementValid( p.getX(), p.getY()-1 ) ) {
+		if( isMovementValid( p.getX(), p.getY()-1 ) && this.maze[ p.getX() ][ p.getY() ].pathTop() ) {
 			givePlayerPoints(p, p.getX(), p.getY()-1 );
 			changeTileValue(p, 0);
 			p.decreaseY();
@@ -158,7 +172,7 @@ public class Maze {
 		}
 	}
 	public synchronized void goDown(Player p) 	{
-		if( isMovementValid( p.getX(), p.getY()+1 ) ) {
+		if( isMovementValid( p.getX(), p.getY()+1 ) && this.maze[ p.getX() ][ p.getY() ].pathBottom() ) {
 			givePlayerPoints(p, p.getX(), p.getY()+1 );
 			changeTileValue(p, 0);
 			p.increaseY();
