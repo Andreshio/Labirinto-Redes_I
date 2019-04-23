@@ -94,40 +94,18 @@ public class Maze {
 			this.maze[x][y].setTop(false);
 			this.maze[x][y-1].setBottom(false);
 		}
-		if(side == 1 && x>0 && y> 0) { //top
-			this.maze[x][y-1].setLeft(false);
-			this.maze[x-1][y-1].setRight(false);
+		if(side == 1 && x>0) { //top
+			this.maze[x][y].setLeft(false);
+			this.maze[x-1][y].setRight(false);
 		}
 		if(side == 2 && x>0 && y>0) {	//right
 			this.maze[x-1][y].setTop(false);
 			this.maze[x-1][y-1].setBottom(false);
 		}
-		if(side == 3 && x>0) {
-			this.maze[x][y].setLeft(false);
-			this.maze[x-1][y].setRight(false);
-		}
-		/*
-		if(side == 0 && x > 0 && y > 0) {	//left
-			System.out.print(" left");
-			this.maze[x-1][y-1].setBottom(false);
-			this.maze[x-1][y].setTop(false);
-		}
-		if(side == 1 && x > 0 && y > 0) {	//top
-			System.out.print(" top");
-			this.maze[x-1][y-1].setRight(false);
+		if(side == 3 && x>0 && y>0) {
 			this.maze[x][y-1].setLeft(false);
+			this.maze[x-1][y-1].setRight(false);
 		}
-		if(side == 2 && y > 0) {	//right
-			System.out.print(" right");
-			this.maze[x][y-1].setBottom(false);
-			this.maze[x][y].setTop(false);
-		}
-		if(side == 3 && x>0) {	//bottom
-			System.out.print(" bottom");
-			this.maze[x][y].setLeft(false);
-			this.maze[x-1][y].setRight(false);
-		}
-		*/
 	}
 	
 	public int[] getNextPoint(int[] point, int mazeSize) {
@@ -168,37 +146,45 @@ public class Maze {
 		return out;
 	}
 	
-	public synchronized  void goLeft(Player p) { 
+	public synchronized boolean goLeft(Player p) { 
 		if( isMovementValid( p.getX()-1, p.getY()) && this.maze[ p.getX() ][ p.getY() ].pathLeft()  ) {
 			givePlayerPoints(p, p.getX()-1, p.getY() );
 			changeTileValue( p, 0);
 			p.decreaseX();
 			changeTileValue( p, p.getGameId()+1 );
+			return true;
 		}
+		return false;
 	}
-	public synchronized void goRight(Player p) 	{ 
+	public synchronized boolean goRight(Player p) 	{ 
 		if( isMovementValid( p.getX()+1, p.getY()) && this.maze[ p.getX() ][ p.getY() ].pathRight() ) {
 			givePlayerPoints(p, p.getX()+1, p.getY() );
 			changeTileValue(p, 0);
 			p.increaseX();
 			changeTileValue( p, p.getGameId()+1 );
+			return true;
 		}
+		return false;
 	}
-	public synchronized void goUp(Player p) 	{ 
+	public synchronized boolean goUp(Player p) 	{ 
 		if( isMovementValid( p.getX(), p.getY()-1 ) && this.maze[ p.getX() ][ p.getY() ].pathTop() ) {
 			givePlayerPoints(p, p.getX(), p.getY()-1 );
 			changeTileValue(p, 0);
 			p.decreaseY();
 			changeTileValue( p, p.getGameId()+1 );
+			return true;
 		}
+		return false;
 	}
-	public synchronized void goDown(Player p) 	{
+	public synchronized boolean goDown(Player p) 	{
 		if( isMovementValid( p.getX(), p.getY()+1 ) && this.maze[ p.getX() ][ p.getY() ].pathBottom() ) {
 			givePlayerPoints(p, p.getX(), p.getY()+1 );
 			changeTileValue(p, 0);
 			p.increaseY();
 			changeTileValue( p, p.getGameId()+1 );		
+			return true;
 		}
+		return false;
 	}
 	
 	public void changeTileValue(Player p, int value) {
