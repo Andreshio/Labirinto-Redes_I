@@ -66,7 +66,8 @@ public class Player extends Thread {
 	         * */
 	        while(true) {
 	        	moved = false;
-	        	System.out.println("TESTE");
+	        	//System.out.println("TESTE");
+	        	currentThread().sleep(50);
 	        	if(this.connected) {
 	        		if( this.keys[ KeyEvent.VK_UP ] ) {
 						maze.goUp(this);
@@ -105,6 +106,7 @@ public class Player extends Thread {
 	
 	public void changePoints(int points) {
 		this.points += points;
+		System.out.println("pontos: "+this.points+" ID: "+gameId);
 	}
 	public void decreaseX() {
 		this.position[0]--;

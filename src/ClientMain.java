@@ -5,6 +5,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JTextField;
 
 public class ClientMain {
@@ -60,12 +61,12 @@ public class ClientMain {
 		DrawTools dtools = new DrawTools(100, new int[7][7]);
 		ClientReader cr = new ClientReader(input, dtools);
 		cr.start();
-		
 		// É necessária uma janela para ser o foco do teclado
 		JFrame aWindow = new JFrame("Labirinto");
 		//aWindow.setBounds(50, 100, 300, 300);
 		aWindow.setSize(1000, 1000);
 		aWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
 
 		// Ativa o KeySender como um listener e o linka
 		// à janela, assim a sua função keyPressed será 
@@ -74,9 +75,13 @@ public class ClientMain {
 		typingArea.addKeyListener(ks);
 		
 		aWindow.add(typingArea);
+	    
+		
 	    aWindow.setVisible(true);
 	    
 	    aWindow.getContentPane().add(dtools);
+	    
+	    
 
 	}
 }
