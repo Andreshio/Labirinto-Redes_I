@@ -10,6 +10,9 @@ public class Maze {
 		
 		// Para testar o sistema de pontos
 		this.matrix[5][5] = 8;
+		this.matrix[2][4] = -1;
+		this.matrix[4][5] = 10;
+		this.matrix[5][4] = 7;
 		this.matrix[4][3] = -4;
 		
 		this.wallPath = new int[ (mazeSize+1)*(mazeSize+1) ][4];
