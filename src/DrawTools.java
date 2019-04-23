@@ -6,9 +6,13 @@ public class DrawTools extends JPanel {
 	// Matriz do labirinto
 	private int[][] maze;
 	
+	// Matrix com os pontos que criam as paredes dos labirintos
+	//Cada linha tem 4 numeros, xy do ponto inicial, xy do ponto final
 	private int[][] wallPath;
+	
 	// Matriz com os pontos que é recebida da classe ClientReader
 	private int[][] points;
+	
 	// Variavel que define o tamanho de cada quadrado do labirinto
 	private int rectSize;
 	
@@ -20,7 +24,6 @@ public class DrawTools extends JPanel {
 		this.rectSize = rectSize;
 		this.maze = maze;
 		
-		this.dims = rectSize;
 		this.thickness = 5;
 		this.margin = 3;
 	}
@@ -64,7 +67,10 @@ public class DrawTools extends JPanel {
 						drawCircle(i, j, Color.GRAY, g);
 					break;
 				}
-
+				
+				/*
+				 * Desenha a pontuação
+				 */
 				g.setColor(Color.BLACK);
 				g.drawString("PONTOS: ", 800, 15);
 				g.drawString("PLAYER 1: " + points[0][1], 850, 30);
@@ -72,32 +78,39 @@ public class DrawTools extends JPanel {
 				g.drawString("PLAYER 3: " + points[2][1], 850, 60);
 				g.drawString("PLAYER 4: " + points[3][1], 850, 75);
 
-				//g.fillRect(j*rectSize + rectSize/4  ,i*rectSize + rectSize/4 ,rectSize/2,rectSize/2);
 			}
 		}
 		
-        g.setColor(Color.BLACK);
+        drawWalls(g);
+    }
+    /*
+     * Cria as paredes
+     * Baseado no site:
+     * https://dev.to/marksasp95/introducing-maze-generator-java-320g
+     * */
+	private void drawWalls(Graphics g) {
+		g.setColor(Color.BLACK);
         Graphics2D g2 = (Graphics2D) g;
         BasicStroke stroke = new BasicStroke(thickness);
         g2.setStroke(stroke);
         
         for (int i = 0; i < wallPath.length; i++) {
-            g2.drawLine(wallPath[i][0] * (900/7) + margin, 
-                        wallPath[i][1] * (900/7) + margin, 
-                        wallPath[i][2] * (900/7) + margin, 
-                        wallPath[i][3] * (900/7) + margin);
+            g2.drawLine(wallPath[i][0] * (rectSize) + margin, 
+                        wallPath[i][1] * (rectSize) + margin, 
+                        wallPath[i][2] * (rectSize) + margin, 
+                        wallPath[i][3] * (rectSize) + margin);
         }
-    }
-    
+	}
+	
 
 	private void drawSquare(int x, int y, Color color, Graphics g) {
 		g.setColor(color);
-		g.fillRect(y * rectSize, x * rectSize, rectSize, rectSize);
+		g.fillRect(y * rectSize + rectSize/4, x * rectSize+rectSize/4, rectSize/2, rectSize/2);
 	}
 
 	private void drawCircle(int x, int y, Color color, Graphics g) {
 		g.setColor(color);
-		g.fillOval(y * rectSize, x * rectSize, rectSize, rectSize);
+		g.fillOval(y * rectSize + rectSize/4, x * rectSize + rectSize/4, rectSize/2, rectSize/2);
 	}
 
 	// Troca um valor por outro - NAO UTILIZADO

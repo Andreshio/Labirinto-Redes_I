@@ -48,7 +48,7 @@ public class ClientReader extends Thread {
 				/*
 				 * Dá update no display
 				 * */
-				dtools.updateDrawMaze(matrix, wallPath);
+				dtools.updateDrawMaze(matrix, wallPath, players);
 			}
 
 		}
