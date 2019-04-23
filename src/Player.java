@@ -68,16 +68,16 @@ public class Player extends Thread {
 	        	currentThread().sleep(50);
 	        	if(this.connected) {
 	        		if( this.keys[ KeyEvent.VK_UP ] ) {
-						moved=maze.goUp(this);
+						moved=maze.goUp(this, this.keys[ KeyEvent.VK_SPACE ]);
 					}
 	        		if( this.keys[ KeyEvent.VK_DOWN ] ) {
-						moved=maze.goDown(this);
+						moved=maze.goDown(this, this.keys[ KeyEvent.VK_SPACE ]);
 					}
 					if( this.keys[ KeyEvent.VK_LEFT ] ) {
-						moved=maze.goLeft(this);
+						moved=maze.goLeft(this, this.keys[ KeyEvent.VK_SPACE ]);
 					}
 					if( this.keys[ KeyEvent.VK_RIGHT ] ) {
-						moved=maze.goRight(this);
+						moved=maze.goRight(this, this.keys[ KeyEvent.VK_SPACE ]);
 					}
 	        	}
 	        	/*

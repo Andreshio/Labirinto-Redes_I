@@ -1,9 +1,10 @@
+import java.util.LinkedList;
 
 public class Maze {
 	private int[][] matrix;
 	private Tile[][] tileMovements;
-	private int[][] wallPath;
-	private int wallPathIndex;
+	
+	private LinkedList<int[]> wall;
 	
 	public Maze(int mazeSize) {
 		this.matrix = new int[mazeSize][mazeSize];
@@ -15,8 +16,7 @@ public class Maze {
 		this.matrix[5][4] = 7;
 		this.matrix[4][3] = -4;
 		
-		this.wallPath = new int[ (mazeSize+1)*(mazeSize+1) ][4];
-		this.wallPathIndex = 0;
+		this.wall = new LinkedList<int[]>();
 		
 		this.createMaze(mazeSize+1);
 	}
@@ -68,13 +68,10 @@ public class Maze {
 					 * Salva os pontos para serem desenhados pelo DrawTools
 					 * point é o ponto inicial da linha
 					 * nextPoint é o ponto final da linha
-					 * */
+					 * */					
 					
-					this.wallPath[ this.wallPathIndex ][0] = point[0];
-					this.wallPath[ this.wallPathIndex ][1] = point[1];
-					this.wallPath[ this.wallPathIndex ][2] = nextPoint[1];
-					this.wallPath[ this.wallPathIndex ][3] = nextPoint[2];
-					this.wallPathIndex++;
+					int[] w = {point[0], point[1], nextPoint[1], nextPoint[2]};
+					this.wall.add(w);
 					
 					/*
 					 * Bloqueia os movimentos, modificando tileMovements
@@ -176,7 +173,35 @@ public class Maze {
 	 *
 	 *	synchronized ?
 	 * */
-	public synchronized boolean goLeft(Player p) { 
+	public synchronized boolean goLeft(Player p, boolean spacePressed) { 
+		int x = p.getX();
+		int y = p.getY();
+		int w0, w1, w2, w3;
+		if(spacePressed && p.getX() > 0) {
+			for(int i=0; i< this.wall.size(); i++) {
+				w0 = wall.get(i)[0];
+				w1 = wall.get(i)[1];
+				w2 = wall.get(i)[2];
+				w3 = wall.get(i)[3];
+				
+				//	System.out.println("w0: "+w0+" w1: "+w1+" w2: "+w2+" w3: "+w3);
+				//	System.out.println("x1: "+x+" y1: "+y+" x2: "+x+" y2: "+(y+1)+"\n");
+				
+				boolean test1 = w0==x && w1==y && w2==x && w3==y+1;
+				boolean test2 = w0==x && w1==y+1 && w2==x && w3==y;
+				
+				if(test1 || test2) {
+					wall.remove(i);
+					this.tileMovements[x][y].setLeft(true);
+					this.tileMovements[x-1][y].setRight(true);
+				}
+			}
+			return true;
+			//	inicial x, y
+			// final x+1, y
+			// x não é inicial
+		}
+		
 		if( isMovementValid( p.getX()-1, p.getY()) && this.tileMovements[ p.getX() ][ p.getY() ].pathLeft()  ) {
 			givePlayerPoints(p, p.getX()-1, p.getY() );
 			changeTileValue( p, 0);
@@ -186,7 +211,35 @@ public class Maze {
 		}
 		return false;
 	}
-	public synchronized boolean goRight(Player p) 	{ 
+	public synchronized boolean goRight(Player p, boolean spacePressed) 	{ 
+		int x = p.getX();
+		int y = p.getY();
+		int w0, w1, w2, w3;
+		if(spacePressed && p.getX() < this.matrix.length-1) {
+			for(int i=0; i< this.wall.size(); i++) {
+				w0 = wall.get(i)[0];
+				w1 = wall.get(i)[1];
+				w2 = wall.get(i)[2];
+				w3 = wall.get(i)[3];
+				
+				//	System.out.println("w0: "+w0+" w1: "+w1+" w2: "+w2+" w3: "+w3);
+				//	System.out.println("x1: "+x+" y1: "+y+" x2: "+x+" y2: "+(y+1)+"\n");
+				
+				boolean test1 = w0==x+1 && w1==y && w2==x+1 && w3==y+1;
+				boolean test2 = w0==x+1 && w1==y+1 && w2==x+1 && w3==y;
+				
+				if(test1 || test2) {
+					wall.remove(i);
+					this.tileMovements[x][y].setRight(true);
+					this.tileMovements[x+1][y].setLeft(true);
+				}
+			}
+			return true;
+			// inicial 	x+1, y
+			// final	x+1, y+1
+			// x não é ultimo
+		}
+		
 		if( isMovementValid( p.getX()+1, p.getY()) && this.tileMovements[ p.getX() ][ p.getY() ].pathRight() ) {
 			givePlayerPoints(p, p.getX()+1, p.getY() );
 			changeTileValue(p, 0);
@@ -196,7 +249,35 @@ public class Maze {
 		}
 		return false;
 	}
-	public synchronized boolean goUp(Player p) 	{ 
+	public synchronized boolean goUp(Player p, boolean spacePressed) 	{ 
+		int x = p.getX();
+		int y = p.getY();
+		int w0, w1, w2, w3;
+		if(spacePressed && y > 0) {
+			for(int i=0; i< this.wall.size(); i++) {
+				w0 = wall.get(i)[0];
+				w1 = wall.get(i)[1];
+				w2 = wall.get(i)[2];
+				w3 = wall.get(i)[3];
+				
+				//	System.out.println("w0: "+w0+" w1: "+w1+" w2: "+w2+" w3: "+w3);
+				//	System.out.println("x1: "+x+" y1: "+y+" x2: "+x+" y2: "+(y+1)+"\n");
+				
+				boolean test1 = w0==x && w1==y && w2==x+1 && w3==y;
+				boolean test2 = w0==x+1 && w1==y && w2==x && w3==y;
+				
+				if(test1 || test2) {
+					wall.remove(i);
+					this.tileMovements[x][y].setTop(true);
+					this.tileMovements[x][y-1].setBottom(true);
+				}
+			}
+			return true;
+			//	inicial x, y
+			//	final x+1, y
+			// y não inicial
+		}
+		
 		if( isMovementValid( p.getX(), p.getY()-1 ) && this.tileMovements[ p.getX() ][ p.getY() ].pathTop() ) {
 			givePlayerPoints(p, p.getX(), p.getY()-1 );
 			changeTileValue(p, 0);
@@ -206,7 +287,35 @@ public class Maze {
 		}
 		return false;
 	}
-	public synchronized boolean goDown(Player p) 	{
+	public synchronized boolean goDown(Player p, boolean spacePressed) 	{
+		int x = p.getX();
+		int y = p.getY();
+		int w0, w1, w2, w3;
+		if(spacePressed && y < this.matrix.length-1) {
+			for(int i=0; i< this.wall.size(); i++) {
+				w0 = wall.get(i)[0];
+				w1 = wall.get(i)[1];
+				w2 = wall.get(i)[2];
+				w3 = wall.get(i)[3];
+				
+				//	System.out.println("w0: "+w0+" w1: "+w1+" w2: "+w2+" w3: "+w3);
+				//	System.out.println("x1: "+x+" y1: "+y+" x2: "+x+" y2: "+(y+1)+"\n");
+				
+				boolean test1 = w0==x && w1==y+1 && w2==x+1 && w3==y+1;
+				boolean test2 = w0==x+1 && w1==y+1 && w2==x && w3==y+1;
+				
+				if(test1 || test2) {
+					wall.remove(i);
+					this.tileMovements[x][y].setBottom(true);
+					this.tileMovements[x][y+1].setTop(true);
+				}
+			}
+			return true;
+			//	inicial x, y+1
+			//	final x+1, y+1
+			// y não final
+		}
+		
 		if( isMovementValid( p.getX(), p.getY()+1 ) && this.tileMovements[ p.getX() ][ p.getY() ].pathBottom() ) {
 			givePlayerPoints(p, p.getX(), p.getY()+1 );
 			changeTileValue(p, 0);
@@ -251,12 +360,12 @@ public class Maze {
 			out += i<this.matrix[0].length-1?"#":"";
 		}
 		out+="&";
-		for(int i=0; i<this.wallPath.length; i++) {
-			for(int j=0; j<this.wallPath[i].length; j++) {
-				out+=wallPath[i][j];
-				out+=j<wallPath[i].length-1?" ":"";
+		for(int i=0; i<this.wall.size(); i++) {
+			for(int j=0; j<this.wall.get(i).length; j++) {
+				out+=wall.get(i)[j];
+				out+=j<wall.get(i).length-1?" ":"";
 			}
-			out += i<wallPath.length-1?"#":"";
+			out += i<wall.size()-1?"#":"";
 		}
 		return out;
 	}
