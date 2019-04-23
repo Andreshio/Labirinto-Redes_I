@@ -191,9 +191,11 @@ public class Maze {
 				boolean test2 = w0==x && w1==y+1 && w2==x && w3==y;
 				
 				if(test1 || test2) {
-					wall.remove(i);
-					this.tileMovements[x][y].setLeft(true);
-					this.tileMovements[x-1][y].setRight(true);
+					if(p.removeWall(wall.get(i))) {
+						wall.remove(i);
+						this.tileMovements[x][y].setLeft(true);
+						this.tileMovements[x-1][y].setRight(true);
+					}
 				}
 			}
 			return true;
@@ -201,7 +203,7 @@ public class Maze {
 			// final x+1, y
 			// x não é inicial
 		}
-		
+		p.resetRemovingWallIterations();
 		if( isMovementValid( p.getX()-1, p.getY()) && this.tileMovements[ p.getX() ][ p.getY() ].pathLeft()  ) {
 			givePlayerPoints(p, p.getX()-1, p.getY() );
 			changeTileValue( p, 0);
@@ -229,9 +231,11 @@ public class Maze {
 				boolean test2 = w0==x+1 && w1==y+1 && w2==x+1 && w3==y;
 				
 				if(test1 || test2) {
-					wall.remove(i);
-					this.tileMovements[x][y].setRight(true);
-					this.tileMovements[x+1][y].setLeft(true);
+					if(p.removeWall(wall.get(i))) {
+						wall.remove(i);
+						this.tileMovements[x][y].setRight(true);
+						this.tileMovements[x+1][y].setLeft(true);
+					}
 				}
 			}
 			return true;
@@ -239,7 +243,7 @@ public class Maze {
 			// final	x+1, y+1
 			// x não é ultimo
 		}
-		
+		p.resetRemovingWallIterations();
 		if( isMovementValid( p.getX()+1, p.getY()) && this.tileMovements[ p.getX() ][ p.getY() ].pathRight() ) {
 			givePlayerPoints(p, p.getX()+1, p.getY() );
 			changeTileValue(p, 0);
@@ -267,9 +271,11 @@ public class Maze {
 				boolean test2 = w0==x+1 && w1==y && w2==x && w3==y;
 				
 				if(test1 || test2) {
-					wall.remove(i);
-					this.tileMovements[x][y].setTop(true);
-					this.tileMovements[x][y-1].setBottom(true);
+					if(p.removeWall(wall.get(i))) {
+						wall.remove(i);
+						this.tileMovements[x][y].setTop(true);
+						this.tileMovements[x][y-1].setBottom(true);
+					}
 				}
 			}
 			return true;
@@ -277,7 +283,7 @@ public class Maze {
 			//	final x+1, y
 			// y não inicial
 		}
-		
+		p.resetRemovingWallIterations();
 		if( isMovementValid( p.getX(), p.getY()-1 ) && this.tileMovements[ p.getX() ][ p.getY() ].pathTop() ) {
 			givePlayerPoints(p, p.getX(), p.getY()-1 );
 			changeTileValue(p, 0);
@@ -305,9 +311,11 @@ public class Maze {
 				boolean test2 = w0==x+1 && w1==y+1 && w2==x && w3==y+1;
 				
 				if(test1 || test2) {
-					wall.remove(i);
-					this.tileMovements[x][y].setBottom(true);
-					this.tileMovements[x][y+1].setTop(true);
+					if(p.removeWall(wall.get(i))) {
+						wall.remove(i);
+						this.tileMovements[x][y].setBottom(true);
+						this.tileMovements[x][y+1].setTop(true);
+					}
 				}
 			}
 			return true;
@@ -315,7 +323,7 @@ public class Maze {
 			//	final x+1, y+1
 			// y não final
 		}
-		
+		p.resetRemovingWallIterations();
 		if( isMovementValid( p.getX(), p.getY()+1 ) && this.tileMovements[ p.getX() ][ p.getY() ].pathBottom() ) {
 			givePlayerPoints(p, p.getX(), p.getY()+1 );
 			changeTileValue(p, 0);

@@ -11,7 +11,7 @@ public class DrawTools extends JPanel {
 	private int[][] wallPath;
 	
 	// Matriz com os pontos que é recebida da classe ClientReader
-	private int[][] points;
+	private int[][] players;
 	
 	// Variavel que define o tamanho de cada quadrado do labirinto
 	private int rectSize;
@@ -36,47 +36,47 @@ public class DrawTools extends JPanel {
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
+		Color[][] playerColors = {
+				{Color.BLUE, new Color(51,153,255), new Color(51,204,255)},
+				{Color.RED, new Color(255, 51, 51), new Color(255,102,102)},
+				{Color.GREEN, new Color(0,255,51), new Color(102,255,102)},
+				{Color.BLACK, new Color(219,102,146), new Color(229,134,167)}
+			};
+		//new Color(208,65,126)
 		// Laco que percorre o labirinto
 		for (int i = 0; i < maze.length; i++) {
 			for (int j = 0; j < maze[i].length; j++) {
-
-				int mValue = maze[i][j];
-				switch (mValue) {
-				case 1:
-					drawSquare(i, j, Color.BLUE, g);
-					break;
-				case 2:
-					drawSquare(i, j, Color.RED, g);
-					break;
-				case 3:
-					drawSquare(i, j, Color.GREEN, g);
-					break;
-				case 4:
-					drawSquare(i, j, Color.MAGENTA, g);
-					break;
-				case 9:
-					drawSquare(i, j, Color.BLACK, g);
-					break;
-				case 0:
-					break;
-
-				default:
-					if (mValue > 0)
-						drawCircle(i, j, Color.YELLOW, g);
-					else
-						drawCircle(i, j, Color.GRAY, g);
-					break;
-				}
 				
+				int mValue = maze[i][j];
+			
+				if(mValue >=1 && mValue<=4) {
+					drawSquare(i, j, playerColors[mValue-1][ this.players[mValue-1][2] ], g);
+				} else {
+				
+					switch (mValue) {
+					case 9:
+						drawSquare(i, j, Color.BLACK, g);
+						break;
+					case 0:
+						break;
+	
+					default:
+						if (mValue > 0)
+							drawCircle(i, j, Color.YELLOW, g);
+						else
+							drawCircle(i, j, Color.GRAY, g);
+						break;
+					}
+				}
 				/*
 				 * Desenha a pontuação
 				 */
 				g.setColor(Color.BLACK);
 				g.drawString("PONTOS: ", 800, 15);
-				g.drawString("PLAYER 1: " + points[0][1], 850, 30);
-				g.drawString("PLAYER 2: " + points[1][1], 850, 45);
-				g.drawString("PLAYER 3: " + points[2][1], 850, 60);
-				g.drawString("PLAYER 4: " + points[3][1], 850, 75);
+				g.drawString("PLAYER 1: " + players[0][1], 850, 30);
+				g.drawString("PLAYER 2: " + players[1][1], 850, 45);
+				g.drawString("PLAYER 3: " + players[2][1], 850, 60);
+				g.drawString("PLAYER 4: " + players[3][1], 850, 75);
 
 			}
 		}
@@ -123,7 +123,7 @@ public class DrawTools extends JPanel {
 	public void updateDrawMaze(int[][] updatedMaze, int[][] wallPath, int[][] points) {
 		maze = updatedMaze;
 		this.wallPath = wallPath;
-		this.points = points;
+		this.players = points;
 		repaint();
 	}
 }

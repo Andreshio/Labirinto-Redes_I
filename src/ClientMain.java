@@ -71,10 +71,7 @@ public class ClientMain {
 		// Ativa o KeySender como um listener e o linka
 		// à janela, assim a sua função keyPressed será 
 		// chamada adequadamente
-		JTextField typingArea = new JTextField(20);
-		typingArea.addKeyListener(ks);
-		
-		aWindow.add(typingArea);
+		aWindow.addKeyListener(ks);
 	    
 		
 	    aWindow.setVisible(true);

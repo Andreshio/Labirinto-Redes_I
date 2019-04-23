@@ -5,10 +5,14 @@ import java.awt.event.KeyEvent;
 public class Player extends Thread { 
 	private Game game;
 	private boolean[] keys;
-	private boolean connected;
 	private int gameId;
 	private int[] position;
 	private int points;
+	
+	private int[] wallToRemove;
+	private int wallRemovingIterations;
+	
+	private boolean connected;
 	private PlayerReader reader;
 	private PlayerSender sender;
 	private long lastMove;
@@ -26,6 +30,8 @@ public class Player extends Thread {
 		this.position[0] = x;
 		this.position[1] = y;
 		this.points = 0;
+		this.wallToRemove = null;
+		this.wallRemovingIterations = 0;
 		this.lastMove = System.currentTimeMillis();
 		
 		
@@ -94,6 +100,37 @@ public class Player extends Thread {
 		}
 	}  
 	
+	public void resetRemovingWallIterations() {
+		this.wallRemovingIterations=0;
+	}
+	
+	public boolean removeWall(int[] linePoints) {
+		System.out.println("removeWall");
+		if(this.wallToRemove == null) {
+			this.wallToRemove = linePoints;
+			this.wallRemovingIterations = 1;
+		} else {
+			boolean equal=true;
+			for(int i=0;i<4;i++) {
+				if(this.wallToRemove[i]!=linePoints[i]) {
+					equal=false;
+				}
+			}
+			if(equal) 	this.wallRemovingIterations++;
+			else {		
+				this.wallToRemove = linePoints;
+				this.wallRemovingIterations=1;
+			}
+		}
+		if(this.wallRemovingIterations==3) {
+			this.changePoints(-15);
+			this.wallToRemove = null;
+			this.wallRemovingIterations = 0;
+			return true;
+		}
+		return false;
+	}
+	
 	public void changePoints(int points) {
 		this.points += points;
 		System.out.println("pontos: "+this.points+" ID: "+gameId);
@@ -136,7 +173,7 @@ public class Player extends Thread {
 	}
 	
 	public String toString() {
-		return this.gameId + " " + this.points;
+		return this.gameId + " " + this.points + " " + this.wallRemovingIterations;
 	}
 	
 }
