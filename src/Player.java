@@ -103,9 +103,17 @@ public class Player extends Thread {
 	public void resetRemovingWallIterations() {
 		this.wallRemovingIterations=0;
 	}
+	/*
+	 * E chamado multiplas vezes, acumulando wallRemovingIterations
+	 * caso seja chamado para o mesmo linePoints consecutivamente.
+	 * 
+	 * wallRemovingInterations != 3 retorna false;
+	 * wallRemovingIterations == 3 tira pontos e retorna true;
+	 * 
+	 * wallRemovingIterations e a base da cor do player
+	 * */
 	
 	public boolean removeWall(int[] linePoints) {
-		System.out.println("removeWall");
 		if(this.wallToRemove == null) {
 			this.wallToRemove = linePoints;
 			this.wallRemovingIterations = 1;

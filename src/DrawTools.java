@@ -39,10 +39,9 @@ public class DrawTools extends JPanel {
 		Color[][] playerColors = {
 				{Color.BLUE, new Color(51,153,255), new Color(51,204,255)},
 				{Color.RED, new Color(255, 51, 51), new Color(255,102,102)},
-				{Color.GREEN, new Color(0,255,51), new Color(102,255,102)},
-				{Color.BLACK, new Color(219,102,146), new Color(229,134,167)}
+				{new Color(0,204, 0), Color.GREEN, new Color(102,255,102)},
+				{new Color(208,65,126), new Color(219,102,146), new Color(229,134,167)}
 			};
-		//new Color(208,65,126)
 		// Laco que percorre o labirinto
 		for (int i = 0; i < maze.length; i++) {
 			for (int j = 0; j < maze[i].length; j++) {
@@ -50,6 +49,7 @@ public class DrawTools extends JPanel {
 				int mValue = maze[i][j];
 			
 				if(mValue >=1 && mValue<=4) {
+					//Baseado no atributo wallRemovingIteration da classe player
 					drawSquare(i, j, playerColors[mValue-1][ this.players[mValue-1][2] ], g);
 				} else {
 				
