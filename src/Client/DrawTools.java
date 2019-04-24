@@ -19,7 +19,14 @@ public class DrawTools extends JPanel {
 	
 	private int thickness;
     private int margin;
-
+    
+    private Color[][] playerColors = {
+			{Color.BLUE, new Color(51,153,255), new Color(51,204,255)},
+			{Color.RED, new Color(255, 51, 51), new Color(255,102,102)},
+			{new Color(0,204, 0), Color.GREEN, new Color(102,255,102)},
+			{new Color(208,65,126), new Color(219,102,146), new Color(229,134,167)}
+		};
+    
 	// Contrutor que recebe o tamanho de cada quadrado e o proprio labirinto
 	public DrawTools(int rectSize, int[][] maze) {
 		this.rectSize = rectSize;
@@ -37,12 +44,6 @@ public class DrawTools extends JPanel {
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
-		Color[][] playerColors = {
-				{Color.BLUE, new Color(51,153,255), new Color(51,204,255)},
-				{Color.RED, new Color(255, 51, 51), new Color(255,102,102)},
-				{new Color(0,204, 0), Color.GREEN, new Color(102,255,102)},
-				{new Color(208,65,126), new Color(219,102,146), new Color(229,134,167)}
-			};
 		// Laco que percorre o labirinto
 		for (int i = 0; i < maze.length; i++) {
 			for (int j = 0; j < maze[i].length; j++) {
@@ -96,22 +97,31 @@ public class DrawTools extends JPanel {
         g2.setStroke(stroke);
         
         for (int i = 0; i < wallPath.length; i++) {
-            g2.drawLine(wallPath[i][0] * (rectSize) + margin, 
-                        wallPath[i][1] * (rectSize) + margin, 
-                        wallPath[i][2] * (rectSize) + margin, 
-                        wallPath[i][3] * (rectSize) + margin);
+            g2.drawLine(wallPath[i][0] * (rectSize) + margin+100, 
+                        wallPath[i][1] * (rectSize) + margin+100, 
+                        wallPath[i][2] * (rectSize) + margin+100, 
+                        wallPath[i][3] * (rectSize) + margin+100);
+        }
+        stroke = new BasicStroke(thickness*10);
+        g2.setStroke(stroke);
+        for (int i=0; i < this.players.length; i++) {
+        	g.setColor( this.playerColors[i][0] );
+        	g2.drawLine(this.players[i][3] * (rectSize) + margin+100,
+        				this.players[i][4] * (rectSize) + margin+100,
+        				this.players[i][5] * (rectSize) + margin+100,
+        				this.players[i][6] * (rectSize) + margin+100);
         }
 	}
 	
 
 	private void drawSquare(int x, int y, Color color, Graphics g) {
 		g.setColor(color);
-		g.fillRect(y * rectSize + rectSize/4, x * rectSize+rectSize/4, rectSize/2, rectSize/2);
+		g.fillRect(y * rectSize + rectSize/4 +100, x * rectSize+rectSize/4 +100, rectSize/2, rectSize/2);
 	}
 
 	private void drawCircle(int x, int y, Color color, Graphics g) {
 		g.setColor(color);
-		g.fillOval(y * rectSize + rectSize/4, x * rectSize + rectSize/4, rectSize/2, rectSize/2);
+		g.fillOval(y * rectSize + rectSize/4+100, x * rectSize + rectSize/4+100, rectSize/2, rectSize/2);
 	}
 
 	// Troca um valor por outro - NAO UTILIZADO

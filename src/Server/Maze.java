@@ -25,7 +25,8 @@ public class Maze {
 	 * Funções de movimentação
 	 * 
 	 * Se estiver de apertando espaço, e de frente a uma parede,
-	 * tentar removê-la
+	 * tentar removê-la. 
+	 * Na terceira tentativa consecutiva na mesma parede, remove-la
 	 * 
 	 * se o movimento for permitido, 
 	 * 		dar pontos ao jogador, se for o caso;
@@ -33,11 +34,11 @@ public class Maze {
 	 * 		atualizar a posição do jogador;
 	 * 		atualizar o labirinto com a nova posição do jogador;
 	 *
-	 *	synchronized ?
 	 * */
 	public synchronized boolean goLeft(Player p, boolean spacePressed) { 
-		if(spacePressed && p.getX() > 0) {
-			this.walls.try_removeLeftWall(p);
+		if(spacePressed) {
+			if(p.testObjective( this.walls.leftWallCoordinates(p) )) System.out.println(" OBJECTIVE REACHED ");
+			if(p.getX() > 0) this.walls.try_removeLeftWall(p);
 			return true;
 		}
 		p.resetRemovingWallIterations();
@@ -51,8 +52,9 @@ public class Maze {
 		return false;
 	}
 	public synchronized boolean goRight(Player p, boolean spacePressed) 	{ 	
-		if(spacePressed && p.getX() < this.matrix.length-1) {
-			this.walls.try_removeRightWall(p);
+		if(spacePressed) {
+			if(p.testObjective( this.walls.rightWallCoordinates(p) )) System.out.println(" OBJECTIVE REACHED ");
+			if(p.getX() < this.matrix.length-1)this.walls.try_removeRightWall(p);
 			return true;
 		}
 		p.resetRemovingWallIterations();
@@ -67,8 +69,9 @@ public class Maze {
 	}
 	public synchronized boolean goUp(Player p, boolean spacePressed) 	{ 
 		
-		if(spacePressed && p.getY() > 0) {
-			this.walls.try_removeTopWall(p);
+		if(spacePressed) {
+			if(p.testObjective( this.walls.topWallCoordinates(p) )) System.out.println(" OBJECTIVE REACHED ");
+			if(p.getY() > 0) this.walls.try_removeTopWall(p);
 			return true;
 		}
 		p.resetRemovingWallIterations();
@@ -83,8 +86,9 @@ public class Maze {
 	}
 	public synchronized boolean goDown(Player p, boolean spacePressed) 	{
 		
-		if(spacePressed && p.getY() < this.matrix.length-1) {
-			this.walls.try_removeBottomWall(p);
+		if(spacePressed) {
+			if(p.testObjective( this.walls.bottomWallCoordinates(p) )) System.out.println(" OBJECTIVE REACHED ");
+			if(p.getY() < this.matrix.length-1) this.walls.try_removeBottomWall(p);
 			return true;
 		}
 		p.resetRemovingWallIterations();

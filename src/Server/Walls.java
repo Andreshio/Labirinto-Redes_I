@@ -2,10 +2,22 @@ package Server;
 import java.util.LinkedList;
 
 public class Walls {
+	/*
+	 * Diz se existe paredes para cada lado, 
+	 * de cada quadrado do labirinto
+	 * */
 	private Tile[][] movementBlocker;
+	
+	/*
+	 * Contém os pontos que criam as paredes.
+	 * Utilizado pelo Drawtools no client side.
+	 * */
 	private LinkedList<int[]> linePaths;
 	
 	public Walls(int mazeSize) {
+		/*
+		 * Precisa ser 1 maior que o labirinto
+		 * */
 		int movementBlockerSize = mazeSize + 1;
 		
 		this.linePaths = new LinkedList<int[]>();
@@ -18,6 +30,7 @@ public class Walls {
 		}
 		
 		createPaths();
+		createOuterWalls();
 	}
 	
 	/*
@@ -145,6 +158,24 @@ public class Walls {
 		}
 	}
 	
+	/*
+	 * Preenche as laterais do labirinto com paredes
+	 * 
+	 * Não precisa modificar o movementBlocker pois
+	 * os limites do tabuleiro são controlados pela 
+	 * função isMovementValid da classe Maze
+	 * */
+	public void createOuterWalls() {
+		int[] w;
+		int size = this.movementBlocker.length;
+		for(int i = 0; i < size-1; i++) {
+			this.linePaths.add( new int[] {i, 0, i+1, 0} );
+			this.linePaths.add( new int[] {i, size-1, i+1, size-1} );
+			this.linePaths.add( new int[] {0, i, 0, i+1} );
+			this.linePaths.add( new int[] {size-1, i, size-1, i+1} );
+		}
+	}
+	
 	public void try_removeLeftWall(Player p) {
 		// linha a esquerda tem
 		// ponto inicial	 x, y
@@ -223,6 +254,7 @@ public class Walls {
 	}
 	
 	public void try_removeTopWall(Player p) {
+		
 		//	Linha acima tem:
 		//	ponto inicial 	x, y
 		//	ponto final 	x+1, y
@@ -259,6 +291,7 @@ public class Walls {
 			}
 		}
 	}
+	
 	public void try_removeBottomWall(Player p) {
 		//	Linha abaixo tem:
 		//	ponto inicial 	x, y+1
@@ -297,6 +330,19 @@ public class Walls {
 			}
 		}
 	}
+	public int[] leftWallCoordinates(Player p) {
+		return new int[] {p.getX(),p.getY(), p.getX(), p.getY()+1  };
+	}
+	public int[] topWallCoordinates(Player p) {
+		return new int[] {p.getX(),p.getY(), p.getX()+1, p.getY()  };
+	}
+	public int[] rightWallCoordinates(Player p) {
+		return new int[] {p.getX()+1,p.getY(), p.getX()+1, p.getY()+1  };
+	}
+	public int[] bottomWallCoordinates(Player p) {
+		return new int[] {p.getX(),p.getY()+1, p.getX()+1, p.getY()+1  };
+	}
+	
 	public boolean left(Player p) {
 		return this.movementBlocker[ p.getX() ][ p.getY() ].pathLeft(); 
 	}

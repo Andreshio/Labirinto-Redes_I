@@ -44,7 +44,11 @@ public class ClientReader extends Thread {
 				
 				matrix   = parser( splitter(aux[0]) );
 				wallPath = parser( splitter(aux[1]) );
+				
+				/*id, pontos, wallRemovingIterations, objective coordinates (x y x y)*/
 				players  = parser( splitter(aux[2]) );
+				
+				
 				
 				/*
 				 * Dá update no display

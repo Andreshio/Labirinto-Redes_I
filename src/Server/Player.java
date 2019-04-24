@@ -9,6 +9,7 @@ public class Player extends Thread {
 	private int gameId;
 	private int[] position;
 	private int points;
+	private int[] objective;
 	
 	private int[] wallToRemove;
 	private int wallRemovingIterations;
@@ -22,7 +23,7 @@ public class Player extends Thread {
 	private Socket socket;
 	DataOutputStream output;
 	
-	public Player(Game game, int id, int x, int y) throws Exception{
+	public Player(Game game, int id, int x, int y, int[] objective) throws Exception{
 		this.game = game;
 		this.keys = new boolean[1024];
 		this.connected = false;
@@ -31,6 +32,8 @@ public class Player extends Thread {
 		this.position[0] = x;
 		this.position[1] = y;
 		this.points = 0;
+		this.objective = objective;
+		
 		this.wallToRemove = null;
 		this.wallRemovingIterations = 0;
 		this.lastMove = System.currentTimeMillis();
@@ -140,6 +143,15 @@ public class Player extends Thread {
 		return false;
 	}
 	
+	public boolean testObjective(int[] o) {
+		System.out.println("\n\n\nobjective\n" + objective[0]+" "+objective[1] + " " + objective[2] + " " + objective[3]
+				+"\n" + o[0] + " " + o[1] + " "+ o[2] + " " + o[3]);
+		if(o[0]==objective[0] && o[1]==objective[1] && o[2]==objective[2] && o[3]==objective[3]) {
+			return true;
+		}
+		return false;
+	}
+	
 	public void changePoints(int points) {
 		this.points += points;
 		System.out.println("pontos: "+this.points+" ID: "+gameId);
@@ -182,7 +194,14 @@ public class Player extends Thread {
 	}
 	
 	public String toString() {
-		return this.gameId + " " + this.points + " " + this.wallRemovingIterations;
+		String out = this.gameId + " " + this.points + " " + this.wallRemovingIterations +" ";
+		
+		for(int i=0; i<this.objective.length; i++) {
+			out+=this.objective[i];
+			out+= i < this.objective.length-1 ? " " : "";
+		}
+		
+		return out;
 	}
 	
 }

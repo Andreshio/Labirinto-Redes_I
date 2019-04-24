@@ -59,7 +59,7 @@ public class ClientMain {
 		 * Recebe o estado do jogo pelo servidor;
 		 * Passa as informações para o display
 		 * */
-		DrawTools dtools = new DrawTools(700/30, new int[7][7]);
+		DrawTools dtools = new DrawTools(700/10, new int[7][7]);
 		ClientReader cr = new ClientReader(input, dtools);
 		cr.start();
 		// É necessária uma janela para ser o foco do teclado
