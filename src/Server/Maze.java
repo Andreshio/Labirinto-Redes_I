@@ -37,8 +37,9 @@ public class Maze {
 	 * */
 	public synchronized boolean goLeft(Player p, boolean spacePressed) { 
 		if(spacePressed) {
-			if(p.testObjective( this.walls.leftWallCoordinates(p) )) System.out.println(" OBJECTIVE REACHED ");
-			if(p.getX() > 0) this.walls.try_removeLeftWall(p);
+			p.testObjective( this.walls.leftWallCoordinates(p) );
+			if(p.getX() > 0) 
+				this.walls.try_removeLeftWall(p);
 			return true;
 		}
 		p.resetRemovingWallIterations();
@@ -53,8 +54,9 @@ public class Maze {
 	}
 	public synchronized boolean goRight(Player p, boolean spacePressed) 	{ 	
 		if(spacePressed) {
-			if(p.testObjective( this.walls.rightWallCoordinates(p) )) System.out.println(" OBJECTIVE REACHED ");
-			if(p.getX() < this.matrix.length-1)this.walls.try_removeRightWall(p);
+			p.testObjective( this.walls.rightWallCoordinates(p) );
+			if(p.getX() < this.matrix.length-1)
+				this.walls.try_removeRightWall(p);
 			return true;
 		}
 		p.resetRemovingWallIterations();
@@ -70,8 +72,9 @@ public class Maze {
 	public synchronized boolean goUp(Player p, boolean spacePressed) 	{ 
 		
 		if(spacePressed) {
-			if(p.testObjective( this.walls.topWallCoordinates(p) )) System.out.println(" OBJECTIVE REACHED ");
-			if(p.getY() > 0) this.walls.try_removeTopWall(p);
+			p.testObjective( this.walls.topWallCoordinates(p) );
+			if(p.getY() > 0) 
+				this.walls.try_removeTopWall(p);
 			return true;
 		}
 		p.resetRemovingWallIterations();
@@ -87,8 +90,9 @@ public class Maze {
 	public synchronized boolean goDown(Player p, boolean spacePressed) 	{
 		
 		if(spacePressed) {
-			if(p.testObjective( this.walls.bottomWallCoordinates(p) )) System.out.println(" OBJECTIVE REACHED ");
-			if(p.getY() < this.matrix.length-1) this.walls.try_removeBottomWall(p);
+			p.testObjective( this.walls.bottomWallCoordinates(p) );
+			if(p.getY() < this.matrix.length-1) 
+				this.walls.try_removeBottomWall(p);
 			return true;
 		}
 		p.resetRemovingWallIterations();

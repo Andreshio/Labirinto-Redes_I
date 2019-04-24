@@ -13,11 +13,12 @@ public class Player extends Thread {
 	
 	private int[] wallToRemove;
 	private int wallRemovingIterations;
+	private boolean playing;
 	
 	private boolean connected;
 	private PlayerReader reader;
 	private PlayerSender sender;
-	private long lastMove;
+
 	
 	private ServerSocket server;
 	private Socket socket;
@@ -33,10 +34,10 @@ public class Player extends Thread {
 		this.position[1] = y;
 		this.points = 0;
 		this.objective = objective;
+		this.playing = true;
 		
 		this.wallToRemove = null;
 		this.wallRemovingIterations = 0;
-		this.lastMove = System.currentTimeMillis();
 		
 		
 		System.out.println("Player " + (id+1) + " waiting client");
@@ -144,9 +145,12 @@ public class Player extends Thread {
 	}
 	
 	public boolean testObjective(int[] o) {
-		System.out.println("\n\n\nobjective\n" + objective[0]+" "+objective[1] + " " + objective[2] + " " + objective[3]
-				+"\n" + o[0] + " " + o[1] + " "+ o[2] + " " + o[3]);
 		if(o[0]==objective[0] && o[1]==objective[1] && o[2]==objective[2] && o[3]==objective[3]) {
+			this.game.exitMaze(this);
+			this.changePoints(150);
+			this.position = new int[] {-1, -1};
+			this.objective = new int[] {-1, -1, -1, -1};
+			this.playing = false;
 			return true;
 		}
 		return false;

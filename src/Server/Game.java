@@ -3,12 +3,12 @@ package Server;
 import java.util.LinkedList;
 
 public class Game {
-	private Player[] players;
+	LinkedList<Player> players;
 	private int numPlayers;
 	private Maze maze;
 
 	public Game(int mazeSize) throws Exception{
-		this.players = new Player[4];
+		this.players = new LinkedList<Player>();
 		this.numPlayers = 0;
 		this.maze = new Maze(mazeSize);
 		
@@ -55,6 +55,10 @@ public class Game {
 		return outWalls;
 	}
 	
+	public void exitMaze(Player p) {
+		this.maze.changeTileValue(p, 0);
+	}
+	
 	public int[] createOutWall(int mazeSize) {
 		int[] wallPoints = new int[4];
 		int side = (int)Math.floor( Math.random()*4 );
@@ -80,7 +84,7 @@ public class Game {
 	 * */
 	public int getFreePlayerId() {
 		for(int i=0; i<4; i++) {
-			if(this.players[i].isConnected() == false) {
+			if(this.players.get(i).isConnected() == false) {
 				return i;										//O id dos jogadores é a posição deles no this.players;
 			}
 		}
@@ -94,14 +98,13 @@ public class Game {
 	 *
 	 * */
 	private void addPlayer(int x, int y, int[] objective) throws Exception{
-		Player p = new Player(this, this.numPlayers, x, y, objective);
+		Player p = new Player(this, this.players.size(), x, y, objective);
 		if(this.numPlayers < 4) {
-			this.players[ this.numPlayers ] = p;
-			numPlayers++;
+			this.players.add(p);
 			
-			this.maze.changeTileValue(p, numPlayers);		//Coloca o id+1 do player no labirinto, em seu x e y
+			this.maze.changeTileValue(p, this.players.size());		//Coloca o id+1 do player no labirinto, em seu x e y
 			
-			p.start(); 										//inicia a thread ( método run() )
+			p.start(); 												//inicia a thread ( método run() )
 		}
 	}
 	public Maze getMaze(){
@@ -111,9 +114,9 @@ public class Game {
 	public String toString() {
 		String out = this.maze.toString();
 		out+= "&";
-		for(int i=0; i<this.numPlayers; i++) {
-			out += this.players[i].toString();
-			out += i<this.numPlayers-1?"#":"";
+		for(int i=0; i<this.players.size(); i++) {
+			out += this.players.get(i).toString();
+			out += i<this.players.size()-1?"#":"";
 		}
 		return out;
 	}

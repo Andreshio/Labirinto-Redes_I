@@ -105,11 +105,13 @@ public class DrawTools extends JPanel {
         stroke = new BasicStroke(thickness*10);
         g2.setStroke(stroke);
         for (int i=0; i < this.players.length; i++) {
-        	g.setColor( this.playerColors[i][0] );
-        	g2.drawLine(this.players[i][3] * (rectSize) + margin+100,
-        				this.players[i][4] * (rectSize) + margin+100,
-        				this.players[i][5] * (rectSize) + margin+100,
-        				this.players[i][6] * (rectSize) + margin+100);
+        	if(this.players[i][3]>=0) {									//Quando o player sair do jogo, as coordenadas de seu objetivo
+	        	g.setColor( this.playerColors[i][0] );					//Serão -1
+	        	g2.drawLine(this.players[i][3] * (rectSize) + margin+100,
+	        				this.players[i][4] * (rectSize) + margin+100,
+	        				this.players[i][5] * (rectSize) + margin+100,
+	        				this.players[i][6] * (rectSize) + margin+100);
+        	}
         }
 	}
 	
