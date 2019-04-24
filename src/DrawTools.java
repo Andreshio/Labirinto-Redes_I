@@ -24,8 +24,8 @@ public class DrawTools extends JPanel {
 		this.rectSize = rectSize;
 		this.maze = maze;
 		
-		this.thickness = 5;
-		this.margin = 3;
+		this.thickness = 1;
+		this.margin = 0;
 	}
 
 	// Desenha o labirinto conforme cada elemento numerico

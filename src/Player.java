@@ -73,16 +73,16 @@ public class Player extends Thread {
 	        	moved = false;
 	        	currentThread().sleep(50);
 	        	if(this.connected) {
-	        		if( this.keys[ KeyEvent.VK_UP ] ) {
+	        		if( this.keys[ KeyEvent.VK_UP ] && moved == false) {
 						moved=maze.goUp(this, this.keys[ KeyEvent.VK_SPACE ]);
 					}
-	        		if( this.keys[ KeyEvent.VK_DOWN ] ) {
+	        		if( this.keys[ KeyEvent.VK_DOWN ] && moved == false) {
 						moved=maze.goDown(this, this.keys[ KeyEvent.VK_SPACE ]);
 					}
-					if( this.keys[ KeyEvent.VK_LEFT ] ) {
+					if( this.keys[ KeyEvent.VK_LEFT ] && moved == false) {
 						moved=maze.goLeft(this, this.keys[ KeyEvent.VK_SPACE ]);
 					}
-					if( this.keys[ KeyEvent.VK_RIGHT ] ) {
+					if( this.keys[ KeyEvent.VK_RIGHT ] && moved == false) {
 						moved=maze.goRight(this, this.keys[ KeyEvent.VK_SPACE ]);
 					}
 	        	}
@@ -113,7 +113,7 @@ public class Player extends Thread {
 	 * wallRemovingIterations e a base da cor do player
 	 * */
 	
-	public boolean removeWall(int[] linePoints) {
+	public boolean tick_removeWall(int[] linePoints) {
 		if(this.wallToRemove == null) {
 			this.wallToRemove = linePoints;
 			this.wallRemovingIterations = 1;

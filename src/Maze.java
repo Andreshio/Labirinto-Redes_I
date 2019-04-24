@@ -2,9 +2,7 @@ import java.util.LinkedList;
 
 public class Maze {
 	private int[][] matrix;
-	private Tile[][] tileMovements;
-	
-	private LinkedList<int[]> wall;
+	private Walls walls;
 	
 	public Maze(int mazeSize) {
 		this.matrix = new int[mazeSize][mazeSize];
@@ -16,151 +14,11 @@ public class Maze {
 		this.matrix[5][4] = 7;
 		this.matrix[4][3] = -4;
 		
-		this.wall = new LinkedList<int[]>();
-		
-		this.createMaze(mazeSize+1);
+		this.walls = new Walls(mazeSize);
 	}
 	
-	public Tile getTile(int x, int y) {
-		return tileMovements[x][y];
-	}
-	/*
-	 * Cria as paredes do labirinto de acordo com o algoritmo Aldous-Broder
-	 * Visto em: https://dev.to/marksasp95/introducing-maze-generator-java-320g
-	 * */
 	
-	private void createMaze(int mazeSize) {
-		/*
-		 * Numero de espacos do labirinto que nao foram visitados
-		 * */
-		int nullTiles = mazeSize*mazeSize;
-		
-		this.tileMovements = new Tile[mazeSize][mazeSize];
-		for(int i=0; i<mazeSize; i++) {
-			for(int j=0; j<mazeSize; j++) {
-				this.tileMovements[i][j] = new Tile();
-			}
-		}
-		/*
-		 * Sorteia um ponto inicial
-		 * */
-		int[] point = {(int)Math.floor(Math.random()*mazeSize), (int)Math.floor(Math.random()*mazeSize)};
-		
-		System.out.println("\n\n\n\n Creating MAZE \n\n\n\n");
-		while(nullTiles>0) {
-			/*
-			 * Sorteia um lado, e pega o proximo ponto
-			 * -1 significa que o lado e invalido, e deve ser
-			 * sorteado novamente
-			 * */
-			int[] nextPoint = getNextPoint(point, mazeSize); // [lado, x, y];
-			if(nextPoint[0] != -1) {
-				if(tileMovements[ point[0] ][ point[1] ].visited() == false) {
-					tileMovements[ point[0] ][ point[1] ].setVisited(true);
-					nullTiles--;
-				}
-				if(tileMovements[ nextPoint[1] ][ nextPoint[2] ].visited() == false) {
-					
-					tileMovements[ nextPoint[1] ][ nextPoint[2] ].setVisited(true);
-					nullTiles--;
-					
-					/*
-					 * Salva os pontos para serem desenhados pelo DrawTools
-					 * point é o ponto inicial da linha
-					 * nextPoint é o ponto final da linha
-					 * */					
-					
-					int[] w = {point[0], point[1], nextPoint[1], nextPoint[2]};
-					this.wall.add(w);
-					
-					/*
-					 * Bloqueia os movimentos, modificando tileMovements
-					 * TileMovements e verificado antes do movimento
-					*/
-					this.makePath(nextPoint[0], nextPoint[1], nextPoint[2], mazeSize);
-				}
-				
-				point[0] = nextPoint[1];
-				point[1] = nextPoint[2];
-			}
-		}
-		System.out.println("\n\n\n MAZE CREATED \n\n\n");
-	}
-	//carve
-	public void makePath(int side, int x, int y, int mazeSize) {
-		/*
-		 * X e Y sao o final de uma linha movida a esquerda,
-		 * bloquear o topo do proprio tile e o fundo do tile
-		 * acima
-		 * */
-		if(side == 0 && y > 0) {
-			this.tileMovements[x][y].setTop(false);
-			this.tileMovements[x][y-1].setBottom(false);
-		}
-		/*
-		 * X e Y sao o final de uma linha movida para cima,
-		 * bloquear a esquerda do proprio tile e a direita do 
-		 * tile anterior (a esquerda, x-1)
-		 * */
-		if(side == 1 && x>0) { //top
-			this.tileMovements[x][y].setLeft(false);
-			this.tileMovements[x-1][y].setRight(false);
-		}
-		/*
-		 * X e Y sao o final de uma linha movida a direita,
-		 * bloquear o topo do tile anterior (x-1), e o fundo 
-		 * do tile 1 linha acima e 1 coluna a esquerda;
-		 * */
-		if(side == 2 && x>0 && y>0) {	//right
-			this.tileMovements[x-1][y].setTop(false);
-			this.tileMovements[x-1][y-1].setBottom(false);
-		}
-		/*
-		 * X e Y sao o final de uma linha movida para baixo,
-		 * bloquear o a esquerda do tile acima e a direita do 
-		 * tile 1 linha acima e 1 coluna a esquerda
-		 * */
-		if(side == 3 && x>0 && y>0) { //bottom
-			this.tileMovements[x][y-1].setLeft(false);
-			this.tileMovements[x-1][y-1].setRight(false);
-		}
-	}
 	
-	public int[] getNextPoint(int[] point, int mazeSize) {
-		
-		int[] nextPoint = null;
-		int randomSide = (int)Math.floor(Math.random()*4);
-		if(randomSide == 0 && point[0] > 0) { //left
-			nextPoint = new int[2];
-			nextPoint[0] = point[0]-1;
-			nextPoint[1] = point[1];
-		}
-		if(randomSide == 1 && point[1] > 0) { //top
-			nextPoint = new int[2];
-			nextPoint[0] = point[0];
-			nextPoint[1] = point[1]-1;
-		}
-		if(randomSide == 2 && point[0] < mazeSize-1) { //right
-			nextPoint = new int[2];
-			nextPoint[0] = point[0]+1;
-			nextPoint[1] = point[1];
-		}
-		if(randomSide == 3 && point[1] < mazeSize-1) { //bottom
-			nextPoint = new int[2];
-			nextPoint[0] = point[0];
-			nextPoint[1] = point[1]+1;
-		}
-		
-		/*
-		 * Caso tenha encontrado um ponto valido.
-		 * */
-		if(nextPoint != null) {
-			int[] out = {randomSide, nextPoint[0], nextPoint[1]};
-			return out;
-		}
-		int[] out = {-1, point[0], point[1]};
-		return out;
-	}
 	
 	/*
 	 * Funções de movimentação
@@ -177,48 +35,12 @@ public class Maze {
 	 *	synchronized ?
 	 * */
 	public synchronized boolean goLeft(Player p, boolean spacePressed) { 
-		int x = p.getX();
-		int y = p.getY();
-		int w0, w1, w2, w3;
-		
-		// linha a esquerda tem
-		// ponto inicial	 x, y
-		// ponto final 		x, y+1
-		// x não é 0
-		
 		if(spacePressed && p.getX() > 0) {
-			for(int i=0; i< this.wall.size(); i++) {
-				//4 pontos que criam a linha da parede
-				
-				w0 = wall.get(i)[0];
-				w1 = wall.get(i)[1];
-				w2 = wall.get(i)[2];
-				w3 = wall.get(i)[3];
-				
-				/*
-				 * Testa se a linha i é a parede à esquerda,
-				 * tanto de A a B quanto de B a A;
-				 * */
-				boolean test1 = w0==x && w1==y && w2==x && w3==y+1;
-				boolean test2 = w0==x && w1==y+1 && w2==x && w3==y;
-				
-				if(test1 || test2) {
-					/*
-					 * Conta 3 iterações, mudando a cor do player;
-					 * 	se chegar a 3, remove a linha, e limpa seus
-					 * 	bloqueios
-					 * */
-					if(p.removeWall(wall.get(i))) {
-						wall.remove(i);
-						this.tileMovements[x][y].setLeft(true);
-						this.tileMovements[x-1][y].setRight(true);
-					}
-				}
-			}
+			this.walls.try_removeLeftWall(p);
 			return true;
 		}
 		p.resetRemovingWallIterations();
-		if( isMovementValid( p.getX()-1, p.getY()) && this.tileMovements[ p.getX() ][ p.getY() ].pathLeft()  ) {
+		if( isMovementValid( p.getX()-1, p.getY()) && this.walls.left(p) == false) {
 			givePlayerPoints(p, p.getX()-1, p.getY() );
 			changeTileValue( p, 0);
 			p.decreaseX();
@@ -227,48 +49,13 @@ public class Maze {
 		}
 		return false;
 	}
-	public synchronized boolean goRight(Player p, boolean spacePressed) 	{ 
-		int x = p.getX();
-		int y = p.getY();
-		int w0, w1, w2, w3;
-		
-		// Linha a direita tem
-		// ponto inicial 	x+1, y
-		// ponto final		x+1, y+1
-		// x não é length-1
-		
+	public synchronized boolean goRight(Player p, boolean spacePressed) 	{ 	
 		if(spacePressed && p.getX() < this.matrix.length-1) {
-			for(int i=0; i< this.wall.size(); i++) {
-				//4 pontos que criam a linha da parede
-				w0 = wall.get(i)[0];
-				w1 = wall.get(i)[1];
-				w2 = wall.get(i)[2];
-				w3 = wall.get(i)[3];
-				
-				/*
-				 * Testa se a linha i e a parede a direita,
-				 * tanto de A a B quanto de B a A;
-				 * */
-				boolean test1 = w0==x+1 && w1==y && w2==x+1 && w3==y+1;
-				boolean test2 = w0==x+1 && w1==y+1 && w2==x+1 && w3==y;
-				
-				if(test1 || test2) {
-					/*
-					 * Conta 3 iterações, mudando a cor do player;
-					 * 	se chegar a 3, remove a linha, e limpa seus
-					 * 	bloqueios
-					 * */
-					if(p.removeWall(wall.get(i))) {
-						wall.remove(i);
-						this.tileMovements[x][y].setRight(true);
-						this.tileMovements[x+1][y].setLeft(true);
-					}
-				}
-			}
+			this.walls.try_removeRightWall(p);
 			return true;
 		}
 		p.resetRemovingWallIterations();
-		if( isMovementValid( p.getX()+1, p.getY()) && this.tileMovements[ p.getX() ][ p.getY() ].pathRight() ) {
+		if( isMovementValid( p.getX()+1, p.getY()) && this.walls.right(p) == false ) {
 			givePlayerPoints(p, p.getX()+1, p.getY() );
 			changeTileValue(p, 0);
 			p.increaseX();
@@ -278,47 +65,13 @@ public class Maze {
 		return false;
 	}
 	public synchronized boolean goUp(Player p, boolean spacePressed) 	{ 
-		int x = p.getX();
-		int y = p.getY();
-		int w0, w1, w2, w3;
-
-		//	Linha acima tem:
-		//	ponto inicial 	x, y
-		//	ponto final 	x+1, y
-		// 	y não e 0
 		
-		if(spacePressed && y > 0) {
-			for(int i=0; i< this.wall.size(); i++) {
-				//4 pontos que criam a linha da parede
-				w0 = wall.get(i)[0];
-				w1 = wall.get(i)[1];
-				w2 = wall.get(i)[2];
-				w3 = wall.get(i)[3];
-				
-				/*
-				 * Testa se a linha i e a parede acima,
-				 * tanto de A a B quanto de B a A;
-				 * */
-				boolean test1 = w0==x && w1==y && w2==x+1 && w3==y;
-				boolean test2 = w0==x+1 && w1==y && w2==x && w3==y;
-				
-				if(test1 || test2) {
-					/*
-					 * Conta 3 iterações, mudando a cor do player;
-					 * 	se chegar a 3, remove a linha, e limpa seus
-					 * 	bloqueios
-					 * */
-					if(p.removeWall(wall.get(i))) {
-						wall.remove(i);
-						this.tileMovements[x][y].setTop(true);
-						this.tileMovements[x][y-1].setBottom(true);
-					}
-				}
-			}
+		if(spacePressed && p.getY() > 0) {
+			this.walls.try_removeTopWall(p);
 			return true;
 		}
 		p.resetRemovingWallIterations();
-		if( isMovementValid( p.getX(), p.getY()-1 ) && this.tileMovements[ p.getX() ][ p.getY() ].pathTop() ) {
+		if( isMovementValid( p.getX(), p.getY()-1 ) && this.walls.top(p) == false) {
 			givePlayerPoints(p, p.getX(), p.getY()-1 );
 			changeTileValue(p, 0);
 			p.decreaseY();
@@ -328,47 +81,13 @@ public class Maze {
 		return false;
 	}
 	public synchronized boolean goDown(Player p, boolean spacePressed) 	{
-		int x = p.getX();
-		int y = p.getY();
-		int w0, w1, w2, w3;
 		
-		//	Linha abaixo tem:
-		//	ponto inicial 	x, y+1
-		//	ponto final 	x+1, y+1
-		// 	y nao e lenght-1
-		
-		if(spacePressed && y < this.matrix.length-1) {
-			for(int i=0; i< this.wall.size(); i++) {
-				//4 pontos que criam a linha da parede
-				w0 = wall.get(i)[0];
-				w1 = wall.get(i)[1];
-				w2 = wall.get(i)[2];
-				w3 = wall.get(i)[3];
-				
-				/*
-				 * Testa se a linha i e a parede abaixo,
-				 * tanto de A a B quanto de B a A;
-				 * */
-				boolean test1 = w0==x && w1==y+1 && w2==x+1 && w3==y+1;
-				boolean test2 = w0==x+1 && w1==y+1 && w2==x && w3==y+1;
-				
-				if(test1 || test2) {
-					/*
-					 * Conta 3 iterações, mudando a cor do player;
-					 * 	se chegar a 3, remove a linha, e limpa seus
-					 * 	bloqueios
-					 * */
-					if(p.removeWall(wall.get(i))) {
-						wall.remove(i);
-						this.tileMovements[x][y].setBottom(true);
-						this.tileMovements[x][y+1].setTop(true);
-					}
-				}
-			}
+		if(spacePressed && p.getY() < this.matrix.length-1) {
+			this.walls.try_removeBottomWall(p);
 			return true;
 		}
 		p.resetRemovingWallIterations();
-		if( isMovementValid( p.getX(), p.getY()+1 ) && this.tileMovements[ p.getX() ][ p.getY() ].pathBottom() ) {
+		if( isMovementValid( p.getX(), p.getY()+1 ) && this.walls.bottom(p) == false) {
 			givePlayerPoints(p, p.getX(), p.getY()+1 );
 			changeTileValue(p, 0);
 			p.increaseY();
@@ -411,14 +130,8 @@ public class Maze {
 			}															
 			out += i<this.matrix[0].length-1?"#":"";
 		}
-		out+="&";
-		for(int i=0; i<this.wall.size(); i++) {
-			for(int j=0; j<this.wall.get(i).length; j++) {
-				out+=wall.get(i)[j];
-				out+=j<wall.get(i).length-1?" ":"";
-			}
-			out += i<wall.size()-1?"#":"";
-		}
+		
+		out+="&" + this.walls.toString();
 		return out;
 	}
 }

@@ -7,7 +7,7 @@ public class Tile {
 	private boolean visited;	
 	
 	public Tile() {
-		this.top = this.right = this.bottom = this.left = true;
+		this.top = this.right = this.bottom = this.left = false;
 		this.visited = false;
 	}
 	
