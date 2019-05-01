@@ -63,8 +63,23 @@ public class DrawTools extends JPanel {
 						break;
 	
 					default:
-						if (mValue > 0)
-							drawCircle(i, j, Color.YELLOW, g);
+						if (mValue > 0) {
+							
+							// Defini cores RGB conforme pontuacao
+							if(mValue < 20)
+								drawCircle(i, j, new Color(255,255,0), g);
+							else if(mValue>=20 && mValue < 30)
+								drawCircle(i, j, new Color(255,200,0), g);
+							else if(mValue>=30 && mValue < 40)
+								drawCircle(i, j, new Color(255,180,0), g);
+							else if(mValue>=40 && mValue < 50)
+								drawCircle(i, j, new Color(255,130,0), g);
+							else {
+								drawCircle(i, j, new Color(255,80,0), g);
+							}
+							
+						}
+							
 						else
 							drawCircle(i, j, Color.GRAY, g);
 						break;

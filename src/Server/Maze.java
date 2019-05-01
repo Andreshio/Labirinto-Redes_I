@@ -1,5 +1,6 @@
 package Server;
 import java.util.LinkedList;
+import java.util.Random;
 
 public class Maze {
 	private int[][] matrix;
@@ -9,15 +10,69 @@ public class Maze {
 		this.matrix = new int[mazeSize][mazeSize];
 		
 		// Para testar o sistema de pontos
-		this.matrix[5][5] = 8;
-		this.matrix[2][4] = -1;
-		this.matrix[4][5] = 10;
-		this.matrix[5][4] = 7;
-		this.matrix[4][3] = -4;
+		//this.matrix[5][5] = 8;
+		//this.matrix[2][4] = -1;
+		//this.matrix[4][5] = 10;
+		//this.matrix[5][4] = 7;
+		//this.matrix[4][3] = -4;
 		
 		this.walls = new Walls(mazeSize);
+		
+		generatePoints(mazeSize, 10);
 	}
 	
+	
+	// Gera 5 tipos de pontos no labirinto recebendo por parametro o tamanho do labirinto e o numero de pontos que será gerado
+	// Cada tipo de ponto sera gerado com base na sua respectiva probabilidade sendo de 0 a 100
+	private void generatePoints(int mazeSize, int numPoints) {
+		// array com os tipos de pontos
+		int[] points = {10,-15,30,40,50};
+		// variaveis para calculo de probabilidade
+		int a = 63; int ab = 83; int ac = 93; int ad = 98;
+		
+		// iteracao para gerar os pontos
+		for (int i = 0; i < numPoints; i++) {
+			
+			// gera a posicao do ponto no labirinto
+			int randX = randomBetween(0, mazeSize-1);
+			int randY = randomBetween(0, mazeSize-1);
+			
+			// verifica se a posicao é valida
+			if(this.matrix[randX][randY] == 0) {
+				
+				// variavel para calculo de probabilidade do tipo de ponto
+				int randProb = randomBetween(0, 100);
+				int randPoint = 0;
+				
+				// condicionais para definicao do tipo de ponto
+				if(randProb<a) {
+					randPoint = points[0];
+				}
+				else if(randProb>=a && randProb<ab) {
+					randPoint = points[1];
+				}
+				else if(randProb>=ab && randProb<ac) {
+					randPoint = points[2];
+				}
+				else if(randProb>=ac && randProb<ad) {
+					randPoint = points[3];
+				}
+				else {
+					randPoint = points[4];
+				}
+				
+				// adiciona ponto ao labirinto
+				this.matrix[randX][randY] = randPoint;
+			}
+			
+		}
+		
+	}
+	
+	private int randomBetween(int min, int max) {
+		Random r = new Random();
+		return r.nextInt((max - min) + 1) + min;
+	}
 	
 	
 	
