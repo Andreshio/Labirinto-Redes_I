@@ -1,6 +1,7 @@
 package Server;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -8,8 +9,10 @@ import java.net.Socket;
 public class PlayerReader extends Thread{
 	private Player player;
 	private BufferedReader input;
+	private boolean interrupted;
 	
 	public PlayerReader(Player player) {
+		this.interrupted = false;
 		this.player = player;
 	}
 	/*
@@ -29,14 +32,23 @@ public class PlayerReader extends Thread{
 	        	this.listen();
 	        }		
 		} catch(Exception e) {
+			this.player.reestartConnection();
+		}
+	}
+	public void close() {
+		try {
+			this.input.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		this.interrupted = true;
 	}
 	public void listen() throws Exception{
 		String command[];
 		int key;
 		boolean state;
-		while(true) {
+		while(this.interrupted == false) {
 			command = this.input.readLine().split(" ");
 			
 			key = Integer.parseInt( command[0] );

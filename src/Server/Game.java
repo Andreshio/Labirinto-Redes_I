@@ -10,7 +10,7 @@ public class Game {
 	public Game(int mazeSize) throws Exception{
 		this.players = new LinkedList<Player>();
 		this.maze = new Maze(mazeSize);
-		this.timeLeft = 1000;
+		this.timeLeft = 90;
 		this.winner = -1;
 		
 		LinkedList<int[]> outWalls = this.createPlayerObjectives(mazeSize);

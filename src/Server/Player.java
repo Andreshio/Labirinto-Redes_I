@@ -5,7 +5,7 @@ import java.awt.event.KeyEvent;
 
 public class Player extends Thread { 
 	private Game game;
-	private boolean[] keys;
+	private boolean[] keys; // Teclas pressionadas
 	private int gameId;
 	private int[] position;
 	private int points;
@@ -14,6 +14,13 @@ public class Player extends Thread {
 	private int[] wallToRemove;
 	private int wallRemovingIterations;
 	private boolean playing;
+	
+	/*
+	 * utilizado para interromper o while do
+	 * método connectAndPlay quando o jogador
+	 * desconecta
+	 * */
+	private boolean interrupted;
 	
 	private boolean connected;
 	private PlayerReader reader;
@@ -44,13 +51,25 @@ public class Player extends Thread {
 		this.server = new ServerSocket(6789+id+1); 
 	}
 	
+	public void run() {
+		try {
+			this.connectAndPlay();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	/*
 	 * 
 	 * Espera a conexão do ClientMain
 	 * 
 	 * */
-	public void run() {
+	public void connectAndPlay() throws IOException {
 		try {
+			/*
+			 * Espera o Client
+			 * */
 	        this.socket = this.server.accept();
 			this.output = new DataOutputStream(this.socket.getOutputStream());
 	        
@@ -69,12 +88,13 @@ public class Player extends Thread {
 			Maze maze = this.game.getMaze();
 	       
 	        boolean moved;
+	        this.interrupted = false;
 	        
 	        /*
 	         * Move o player de acordo
 	         * com as teclas pressionadas;
 	         * */
-	        while(true) {
+	        while(this.interrupted == false) {
 	        	moved = false;
 	        	Thread.sleep(50);
 	        	if(this.connected) {
@@ -101,9 +121,30 @@ public class Player extends Thread {
 	        
 	        
 		} catch(Exception e) {
-			e.printStackTrace();
+			this.reestartConnection();
 		}
 	}  
+	/*
+	 * Chamado ao dar catch da excessão na thread PlayerReader
+	 * */
+	public void reestartConnection() {
+		try {
+			this.output.close();
+			this.reader.close();
+			this.sender.close();
+			this.socket.close();
+		
+			// Necessário para sair do while do método connectAndPlay
+			this.interrupted = true;
+			// Necessário para voltar a ser conectado pela classe Game
+			this.connected = false;
+			
+			this.connectAndPlay();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
 	public void resetRemovingWallIterations() {
 		this.wallRemovingIterations=0;
@@ -144,12 +185,19 @@ public class Player extends Thread {
 		return false;
 	}
 	
+	/*
+	 * Remove o Player do Labirinto;
+	 * position -1 -1 o impedirá de se movimentar 
+	 * */
 	public void exitMaze() {
 		this.position = new int[] {-1, -1};
 		this.objective = new int[] {-1, -1, -1, -1};
 		this.playing = false;
 	}
-	
+	/*
+	 * Caso o array de o for o objetivo, remover o player
+	 * do jogo, e o dar pontos
+	 * */
 	public boolean testObjective(int[] o) {
 		if(o[0]==objective[0] && o[1]==objective[1] && o[2]==objective[2] && o[3]==objective[3]) {
 			this.game.removePlayerFromMaze(this);
@@ -204,7 +252,10 @@ public class Player extends Thread {
 	public int getPoints() {
 		return points;
 	}
-	
+	/*
+	 * id pontos wallRemovingIterations x y x y
+	 * 								   (objetivo)
+	 * */
 	public String toString() {
 		String out = this.gameId + " " + this.points + " " + this.wallRemovingIterations +" ";
 		

@@ -176,6 +176,12 @@ public class Maze {
 		return this.matrix;
 	}
 	
+	/*
+	 * colunas separadas por " " e linhas por #
+	 * 
+	 * & separa a matrix do labirinto das coordenadas
+	 * das paredes
+	 * */
 	public String toString() {
 		String out = "\n";
 		for(int i=0; i < this.matrix[0].length;i++) {
