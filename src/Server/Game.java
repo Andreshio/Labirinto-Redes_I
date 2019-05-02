@@ -1,16 +1,17 @@
 package Server;
-
 import java.util.LinkedList;
 
 public class Game {
 	LinkedList<Player> players;
-	private int numPlayers;
 	private Maze maze;
+	private int timeLeft;
+	private int winner;
 
 	public Game(int mazeSize) throws Exception{
 		this.players = new LinkedList<Player>();
-		this.numPlayers = 0;
 		this.maze = new Maze(mazeSize);
+		this.timeLeft = 20;
+		this.winner = -1;
 		
 		LinkedList<int[]> outWalls = this.createPlayerObjectives(mazeSize);
 		
@@ -25,8 +26,34 @@ public class Game {
 		this.addPlayer(0, mazeSize-1, outWalls.get(1) );
 		this.addPlayer(mazeSize-1, 0, outWalls.get(2) );
 		this.addPlayer(mazeSize-1, mazeSize-1, outWalls.get(3) );
+		
+		/*
+		 * É necessário uma nova thread poins o méthodo
+		 * sleep() iria atraplhar o inicio da comunicação
+		 * com o client
+		 * */
+		Thread timeThread = new Thread(){
+		    public void run(){  
+		    	try {    
+		    		while(timeLeft>0) {
+		    			Thread.sleep(1000);
+		    			timeLeft--;
+		    		}
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		    	endGame();
+		    }
+		  };
+
+		  timeThread.start();
 	}
-	
+	/*
+	 * Cria objetivos para os jogadores.
+	 * Objetivos são paredes que ao apertar espaço,
+	 * o jogador ganha muitos pontos e é removido do jogo
+	 * */
 	public LinkedList<int[]> createPlayerObjectives(int mazeSize) {
 		LinkedList<int[]> outWalls = new LinkedList<int[]>();
 		
@@ -38,7 +65,6 @@ public class Game {
 			while(newWall == false) {
 				newWall =  true;
 				w = createOutWall(mazeSize);
-				System.out.println(outWalls.size());
 				for(int i=0; i<outWalls.size(); i++) {
 					w0 = outWalls.get(i)[0];
 					w1 = outWalls.get(i)[1];
@@ -48,16 +74,16 @@ public class Game {
 					if(w0==w[0] && w1==w[1] && w2==w[2] && w3==w[3]) 
 						newWall = false;
 				}
-				System.out.println(w[0] + " "+w[1] +" "+ w[2] +" "+ w[3]);
 				outWalls.add(w);
 			}
 		}
 		return outWalls;
 	}
 	
-	public void exitMaze(Player p) {
+	public void removePlayerFromMaze(Player p) {
 		this.maze.changeTileValue(p, 0);
 	}
+	
 	
 	public int[] createOutWall(int mazeSize) {
 		int[] wallPoints = new int[4];
@@ -80,6 +106,40 @@ public class Game {
 	}
 	
 	/*
+	 * Retorna o índice do player com maior pontuação
+	 * -1 se o jogo estiver em andamento
+	 * -2 caso seja um empate
+	 * */
+	public void endGame() {
+		int maxPointsPlayer = -1;
+		int maxPoints = -1;
+		boolean draw = false;
+		for(int i = 0; i < 4; i++) {
+			if(players.get(i).getPoints() == maxPoints) 
+				draw = true;
+			if(players.get(i).getPoints() > maxPoints) {
+				maxPoints = players.get(i).getPoints();
+				maxPointsPlayer = i;
+				draw = false;
+			}
+		}
+		Player p;
+		for(int i = 0; i < 4; i++) {
+			p = this.players.get(i);
+			if(p.isPlaying()) {
+				this.removePlayerFromMaze( p );
+				p.exitMaze();
+			}
+		}
+		
+		if(draw)
+			this.winner = -2;
+		else 
+			this.winner = maxPointsPlayer;
+		
+	}
+	
+	/*
 	 * Retorna o id do primeiro player não conectado que encontrar
 	 * */
 	public int getFreePlayerId() {
@@ -99,7 +159,7 @@ public class Game {
 	 * */
 	private void addPlayer(int x, int y, int[] objective) throws Exception{
 		Player p = new Player(this, this.players.size(), x, y, objective);
-		if(this.numPlayers < 4) {
+		if(this.players.size() < 4) {
 			this.players.add(p);
 			
 			this.maze.changeTileValue(p, this.players.size());		//Coloca o id+1 do player no labirinto, em seu x e y
@@ -110,7 +170,10 @@ public class Game {
 	public Maze getMaze(){
 		return this.maze;
 	}
-	
+	/*
+	 * Contém a informação relevante do 
+	 * jogo. Será enviado para o client.
+	 * */
 	public String toString() {
 		String out = this.maze.toString();
 		out+= "&";
@@ -118,6 +181,7 @@ public class Game {
 			out += this.players.get(i).toString();
 			out += i<this.players.size()-1?"#":"";
 		}
+		out += "&" + this.timeLeft + " " + this.winner;
 		return out;
 	}
 }

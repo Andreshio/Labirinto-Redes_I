@@ -40,20 +40,22 @@ public class ClientReader extends Thread {
 				line = input.readLine();
 				aux = line.split("&");
 				
-				System.out.println(aux[1]);
-				
 				matrix   = parser( splitter(aux[0]) );
 				wallPath = parser( splitter(aux[1]) );
 				
 				/*id, pontos, wallRemovingIterations, objective coordinates (x y x y)*/
 				players  = parser( splitter(aux[2]) );
 				
+				String gameInfo[][] = splitter( aux[3] );
+				
+				String time = gameInfo[0][0];
+				int winner = Integer.parseInt( gameInfo[0][1] );
 				
 				
 				/*
 				 * Dá update no display
 				 * */
-				dtools.updateDrawMaze(matrix, wallPath, players);
+				dtools.updateDrawMaze(matrix, wallPath, players, time, winner);
 			}
 
 		}

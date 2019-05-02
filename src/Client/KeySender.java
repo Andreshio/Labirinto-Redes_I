@@ -20,7 +20,6 @@ public class KeySender implements KeyListener{
 	 * */
 	public void keyPressed(KeyEvent event) {	
 		int code = event.getKeyCode();
-		//System.out.println(code + " PRESSED");
 		try {
 			
 	        output.writeBytes(code + " true\n");
@@ -31,7 +30,6 @@ public class KeySender implements KeyListener{
 	}
 	public void keyReleased(KeyEvent event) {	
 		int code = event.getKeyCode();
-		//System.out.println(code + " RELEASED");
 		try {
 			
 	        output.writeBytes(code + " false\n");

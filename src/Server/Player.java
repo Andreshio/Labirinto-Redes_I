@@ -76,7 +76,7 @@ public class Player extends Thread {
 	         * */
 	        while(true) {
 	        	moved = false;
-	        	currentThread().sleep(50);
+	        	Thread.sleep(50);
 	        	if(this.connected) {
 	        		if( this.keys[ KeyEvent.VK_UP ] && moved == false) {
 						moved=maze.goUp(this, this.keys[ KeyEvent.VK_SPACE ]);
@@ -144,13 +144,17 @@ public class Player extends Thread {
 		return false;
 	}
 	
+	public void exitMaze() {
+		this.position = new int[] {-1, -1};
+		this.objective = new int[] {-1, -1, -1, -1};
+		this.playing = false;
+	}
+	
 	public boolean testObjective(int[] o) {
 		if(o[0]==objective[0] && o[1]==objective[1] && o[2]==objective[2] && o[3]==objective[3]) {
-			this.game.exitMaze(this);
+			this.game.removePlayerFromMaze(this);
 			this.changePoints(150);
-			this.position = new int[] {-1, -1};
-			this.objective = new int[] {-1, -1, -1, -1};
-			this.playing = false;
+			this.exitMaze();
 			return true;
 		}
 		return false;
@@ -158,7 +162,6 @@ public class Player extends Thread {
 	
 	public void changePoints(int points) {
 		this.points += points;
-		System.out.println("pontos: "+this.points+" ID: "+gameId);
 	}
 	public void decreaseX() {
 		this.position[0]--;
@@ -184,6 +187,9 @@ public class Player extends Thread {
 	public int getY() {
 		return position[1];
 	}
+	public boolean isPlaying() {
+		return this.playing;
+	}
 	public Socket getSocket() {
 		return this.socket;
 	}
@@ -195,6 +201,9 @@ public class Player extends Thread {
 	}
 	public void setKeyState(int key, boolean state) {
 		this.keys[key] = state;
+	}
+	public int getPoints() {
+		return points;
 	}
 	
 	public String toString() {

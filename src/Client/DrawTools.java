@@ -14,6 +14,9 @@ public class DrawTools extends JPanel {
 	// Matriz com os pontos que é recebida da classe ClientReader
 	private int[][] players;
 	
+	private String time;
+	private int winner;
+	
 	// Variavel que define o tamanho de cada quadrado do labirinto
 	private int rectSize;
 	
@@ -89,12 +92,21 @@ public class DrawTools extends JPanel {
 				 * Desenha a pontuação
 				 */
 				g.setColor(Color.BLACK);
-				g.drawString("PONTOS: ", 800, 15);
+				g.drawString("PONTOS: ", 820, 15);
 				g.drawString("PLAYER 1: " + players[0][1], 850, 30);
 				g.drawString("PLAYER 2: " + players[1][1], 850, 45);
 				g.drawString("PLAYER 3: " + players[2][1], 850, 60);
 				g.drawString("PLAYER 4: " + players[3][1], 850, 75);
-
+				
+				g.drawString("Tempo Restante:", 820, 100);
+				g.drawString(this.time, 850, 115);
+				
+				if(this.winner == -2) {
+					g.drawString("EMPATE", 850, 150);
+				} else if(this.winner != -1) {
+					g.drawString("Player " + (this.winner+1) + " GANHOU", 820, 150);
+				}
+					
 			}
 		}
 		
@@ -148,10 +160,12 @@ public class DrawTools extends JPanel {
 	}
 
 	// Atualiza o labirinto a partir do labirinto recebido por parametro
-	public void updateDrawMaze(int[][] updatedMaze, int[][] wallPath, int[][] points) {
+	public void updateDrawMaze(int[][] updatedMaze, int[][] wallPath, int[][] points, String time, int winner) {
 		maze = updatedMaze;
 		this.wallPath = wallPath;
 		this.players = points;
+		this.time = time;
+		this.winner = winner;
 		repaint();
 	}
 }

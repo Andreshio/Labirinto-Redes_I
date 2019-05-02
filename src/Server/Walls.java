@@ -44,7 +44,7 @@ public class Walls {
 		
 		int[] point = {(int)Math.floor(Math.random()*size), (int)Math.floor(Math.random()*size)};
 		
-		System.out.println("\n\n\n\n Creating MAZE \n\n\n\n");
+		System.out.println("\n	Creating Walls\n");
 		while(nullTiles>0) {
 			/*
 			 * Sorteia um lado, e pega o proximo ponto
@@ -82,7 +82,7 @@ public class Walls {
 				point[1] = nextPoint[2];
 			}
 		}
-		System.out.println("\n\n\n MAZE CREATED \n\n\n");
+		System.out.println("	Walls created \n");
 	}
 	public int[] getNextPoint(int[] point) {
 		int size = this.movementBlocker.length;
