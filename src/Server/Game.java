@@ -10,7 +10,7 @@ public class Game {
 	public Game(int mazeSize) throws Exception{
 		this.players = new LinkedList<Player>();
 		this.maze = new Maze(mazeSize);
-		this.timeLeft = 20;
+		this.timeLeft = 1000;
 		this.winner = -1;
 		
 		LinkedList<int[]> outWalls = this.createPlayerObjectives(mazeSize);
@@ -35,7 +35,7 @@ public class Game {
 		Thread timeThread = new Thread(){
 		    public void run(){  
 		    	try {    
-		    		while(timeLeft>0) {
+		    		while(timeLeft>0 && winner == -1) {
 		    			Thread.sleep(1000);
 		    			timeLeft--;
 		    		}
@@ -81,7 +81,17 @@ public class Game {
 	}
 	
 	public void removePlayerFromMaze(Player p) {
+		System.out.println("\n\n\nRemoving player");
 		this.maze.changeTileValue(p, 0);
+		p.exitMaze();
+		boolean gameEnded = true;
+		
+		for(int i = 0; i < 4; i++) {
+			if(this.players.get(i).isPlaying())
+				gameEnded = false;
+		}
+		if(gameEnded)
+			this.endGame();
 	}
 	
 	
@@ -111,6 +121,7 @@ public class Game {
 	 * -2 caso seja um empate
 	 * */
 	public void endGame() {
+		System.out.println("\n\nEND GAME\n\n");
 		int maxPointsPlayer = -1;
 		int maxPoints = -1;
 		boolean draw = false;

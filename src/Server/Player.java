@@ -154,7 +154,6 @@ public class Player extends Thread {
 		if(o[0]==objective[0] && o[1]==objective[1] && o[2]==objective[2] && o[3]==objective[3]) {
 			this.game.removePlayerFromMaze(this);
 			this.changePoints(150);
-			this.exitMaze();
 			return true;
 		}
 		return false;
